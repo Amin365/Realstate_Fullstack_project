@@ -44,7 +44,7 @@ export function LoginForm({ className, ...props }) {
     onSuccess: (data) => {
       if(data.token){
         disptach(setAuth({user:data.user,token:data.token}))
-        navigate("/dashboard")
+        navigate("/dashboard",{ replace: true })
       }
     },
     onError: (err) => {
