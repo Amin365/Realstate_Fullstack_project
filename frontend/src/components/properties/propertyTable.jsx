@@ -61,7 +61,7 @@ const PropertyTable = ({ onEdit }) => {
                 </TableCell>
                 <TableCell>{property.propertyType}</TableCell>
                 <TableCell className="text-right">
-                  {property.currency} {property.amount} / {property.period}/{property.image}
+                  {property.currency} {property.amount} / {property.period}
                 </TableCell>
                 <TableCell className="text-right space-x-2">
                   <TooltipProvider>

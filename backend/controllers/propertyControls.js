@@ -1,50 +1,3 @@
-// import property from "../models/property.js";
-
-
-// export const CreateProperty = async (req, res, next) => {
-//   try {
-    
-
-//     const newProperty = await property.create({
-//       ...req.body,
-     
-//       createdBy: req.user._id,
-//     });
-
-//     res.status(201).json(newProperty);
-//   } catch (error) {
-//     next(error);
-//   }
-// };
-
-// export const GetmyProperty =async(req,res,next)=>{
-// try {
-//         const properties =await property.find({createdBy:req.user._id}).sort({createdAt:-1})
-//         res.status(201).json(properties)
-
-    
-// } catch (error) {
-//     next(error)
-// }
-
-// }
-
-// // update Property
-
-
-// export const updateprperty =async(req,res,next)=>{
-//     try {
-//         const pro= await property.findByIdAndUpdate({_id:req.params.id,createdBy: req.user._id},
-//             req.body,
-//             {new:true}
-//         )
-//           if (!pro) return res.status(404).json({ message: 'Task not found' });
-//     res.json(pro);
-//     } catch (error) {
-//         next(error)
-        
-//     }
-// }
 
 
 
@@ -60,8 +13,8 @@ export const CreateProperty = async (req, res, next) => {
       propertyType: req.body.propertyType,
       status: req.body.status,
       isFavorite: req.body.isFavorite === "true" || req.body.isFavorite === true,
-      price: req.body.price,
-      pricePeriod: req.body.pricePeriod,
+      amount: req.body.amount,
+      period: req.body.period,
       currency: req.body.currency,
       address: req.body.address,
       city: req.body.city,
@@ -91,6 +44,24 @@ export const GetmyProperty = async (req, res, next) => {
   }
 };
 
+
+// public Geters 
+// GET /api/properties
+export const GetAllProperties = async (req, res, next) => {
+  try {
+    // Fetch latest 4 properties
+    const properties = await property
+      .find()
+      .sort({ createdAt: -1 })
+      .limit(4); 
+
+    res.status(200).json(properties);
+  } catch (error) {
+    next(error);
+  }
+};
+
+
 // UPDATE PROPERTY
 export const updateProperty = async (req, res, next) => {
   try {
@@ -100,8 +71,8 @@ export const updateProperty = async (req, res, next) => {
       propertyType: req.body.propertyType,
       status: req.body.status,
       isFavorite: req.body.isFavorite === "true" || req.body.isFavorite === true,
-      price: req.body.price,
-      pricePeriod: req.body.pricePeriod,
+      amount: req.body.amount,
+      period: req.body.period,
       currency: req.body.currency,
       address: req.body.address,
       city: req.body.city,

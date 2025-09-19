@@ -30,7 +30,7 @@ app.use(cors({
  
 }));
 
-app.use("/uploads", express.static(path.join(path.resolve(), "uploads")));
+app.use("/uploads", express.static(path.join(process.cwd(), "backend", "uploads")));
 
 // Routes
 app.use('/api', Authrouter);

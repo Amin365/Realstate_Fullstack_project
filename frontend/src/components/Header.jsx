@@ -83,7 +83,7 @@ const navigate=useNavigate()
                         to="/dashboard/clients"
                         className="flex items-center gap-3 py-2"
                       >
-                        <Users className="text-purple-600" />
+                        <Users className="text-rose-600" />
                         Manage Clients
                       </Link>
                     </DropdownMenuItem>
@@ -112,10 +112,10 @@ const navigate=useNavigate()
               </DropdownMenu>
             ) : (
               <Link
-                to="/signin"
-                className="px-4 py-2 border rounded-md text-green-600 hover:bg-green-50"
+                to="/register"
+                className="px-4 py-2 bg-rose-600 text-white rounded-md"
               >
-                Sign In
+                Sign Up
               </Link>
             )}
           </div>

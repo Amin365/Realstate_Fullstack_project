@@ -20,8 +20,8 @@ import { toast } from "sonner";
 const PropertyForm = ({ open, onOpenChange, property }) => {
   const initialFormValue = {
     title: "",
-    price: "",
-    pricePeriod: "month",
+    amount: "",
+    period: "month", // ✅ match schema
     currency: "BIRR",
     propertyType: "Apartment",
     status: "For Sale",
@@ -30,9 +30,9 @@ const PropertyForm = ({ open, onOpenChange, property }) => {
     state: "",
     bedrooms: 0,
     bathrooms: 0,
-    areaLength: 0,
-    areaWidth: 0,
-    areaUnit: "m²",
+    length: 0, // ✅ match schema
+    width: 0,  // ✅ match schema
+    unit: "m²", // ✅ match schema
     isFavorite: false,
   };
 
@@ -47,8 +47,8 @@ const PropertyForm = ({ open, onOpenChange, property }) => {
     if (isEdit) {
       setFormValue({
         title: property.title || "",
-        price: property.price || "",
-        pricePeriod: property.pricePeriod || "month",
+        amount: property.amount || "",
+        period: property.period || "month",
         currency: property.currency || "BIRR",
         propertyType: property.propertyType || "Apartment",
         status: property.status || "For Sale",
@@ -57,9 +57,9 @@ const PropertyForm = ({ open, onOpenChange, property }) => {
         state: property.state || "",
         bedrooms: property.bedrooms || 0,
         bathrooms: property.bathrooms || 0,
-        areaLength: property.areaLength || 0,
-        areaWidth: property.areaWidth || 0,
-        areaUnit: property.areaUnit || "m²",
+        length: property.length || 0,
+        width: property.width || 0,
+        unit: property.unit || "m²",
         isFavorite: property.isFavorite || false,
       });
       setImageFile(null);
@@ -109,7 +109,15 @@ const PropertyForm = ({ open, onOpenChange, property }) => {
     e.preventDefault();
     const formData = new FormData();
 
-    Object.entries(formValue).forEach(([key, val]) => formData.append(key, val));
+    Object.entries(formValue).forEach(([key, val]) => {
+      // Ensure numeric fields are numbers
+      if (["amount", "bedrooms", "bathrooms", "length", "width"].includes(key)) {
+        formData.append(key, val === "" ? 0 : Number(val));
+      } else {
+        formData.append(key, val);
+      }
+    });
+
     if (imageFile) formData.append("image", imageFile);
 
     mutation.mutate({ formData, id: property?._id });
@@ -142,8 +150,18 @@ const PropertyForm = ({ open, onOpenChange, property }) => {
           <div className="space-y-2">
             <Label>Price *</Label>
             <div className="flex gap-2">
-              <Input name="price" type="number" placeholder="Amount" value={formValue.price} onChange={handleChange} required />
-              <Select value={formValue.pricePeriod} onValueChange={(v) => handleChange({ target: { name: "pricePeriod", value: v } })}>
+              <Input
+                name="amount"
+                type="number"
+                placeholder="Amount"
+                value={formValue.amount}
+                onChange={handleChange}
+                required
+              />
+              <Select
+                value={formValue.period}
+                onValueChange={(v) => handleChange({ target: { name: "period", value: v } })}
+              >
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="month">Month</SelectItem>
@@ -158,7 +176,10 @@ const PropertyForm = ({ open, onOpenChange, property }) => {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <Label>Property Type</Label>
-              <Select value={formValue.propertyType} onValueChange={(v) => handleChange({ target: { name: "propertyType", value: v } })}>
+              <Select
+                value={formValue.propertyType}
+                onValueChange={(v) => handleChange({ target: { name: "propertyType", value: v } })}
+              >
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="Apartment">Apartment</SelectItem>
@@ -170,7 +191,10 @@ const PropertyForm = ({ open, onOpenChange, property }) => {
             </div>
             <div>
               <Label>Status</Label>
-              <Select value={formValue.status} onValueChange={(v) => handleChange({ target: { name: "status", value: v } })}>
+              <Select
+                value={formValue.status}
+                onValueChange={(v) => handleChange({ target: { name: "status", value: v } })}
+              >
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="For Sale">For Sale</SelectItem>
@@ -196,15 +220,20 @@ const PropertyForm = ({ open, onOpenChange, property }) => {
             <div className="flex gap-2">
               <Input name="bedrooms" type="number" placeholder="Bedrooms" value={formValue.bedrooms} onChange={handleChange} required />
               <Input name="bathrooms" type="number" placeholder="Bathrooms" value={formValue.bathrooms} onChange={handleChange} required />
-              <Input name="areaLength" type="number" placeholder="Length" value={formValue.areaLength} onChange={handleChange} />
-              <Input name="areaWidth" type="number" placeholder="Width" value={formValue.areaWidth} onChange={handleChange} />
-              <Input name="areaUnit" placeholder="Unit" value={formValue.areaUnit} onChange={handleChange} />
+              <Input name="length" type="number" placeholder="Length" value={formValue.length} onChange={handleChange} />
+              <Input name="width" type="number" placeholder="Width" value={formValue.width} onChange={handleChange} />
+              <Input name="unit" placeholder="Unit" value={formValue.unit} onChange={handleChange} />
             </div>
           </div>
 
           {/* Favorite */}
           <div className="flex items-center gap-2">
-            <Checkbox id="isFavorite" name="isFavorite" checked={formValue.isFavorite} onCheckedChange={(v) => handleChange({ target: { name: "isFavorite", checked: v } })} />
+            <Checkbox
+              id="isFavorite"
+              name="isFavorite"
+              checked={formValue.isFavorite}
+              onCheckedChange={(v) => handleChange({ target: { name: "isFavorite", checked: v } })}
+            />
             <Label htmlFor="isFavorite">Mark as Favorite</Label>
           </div>
 
