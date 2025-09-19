@@ -1,3 +1,5 @@
+import MainHeader from "../components/Header"
+import { ModeToggle } from "../components/mode-toggle"
 import { SiteHeader } from "../components/site-header"
 
 
@@ -5,7 +7,11 @@ const HomePage =()=>{
     return(
         <div>
             Home page
-            <SiteHeader/>
+
+            <ModeToggle/>
+
+            <MainHeader/>
+          
         </div>
     )
 }

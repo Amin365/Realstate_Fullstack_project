@@ -1,3 +1,5 @@
+import { useState, useEffect } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   Dialog,
   DialogContent,
@@ -6,43 +8,70 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-
-import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "../../lib/api/CleintApi";
 import { extractErrorMessages } from "../../../../backend/util/GlobalEror";
+import { toast } from "sonner";
 
-const PropertyForm = ({ open, onOpenChange }) => {
- const initialFormValue = {
+const PropertyForm = ({ open, onOpenChange, property }) => {
+  const initialFormValue = {
     title: "",
-    price: { amount: "", period: "month", currency: "BIRR" },
+    price: "",
+    pricePeriod: "month",
+    currency: "BIRR",
     propertyType: "Apartment",
     status: "For Sale",
-    location: { address: "", city: "", state: "" },
-    details: { bedrooms: "", bathrooms: "", area: { length: "", width: "", unit: "m²" } },
-    isFavorite: false,}
+    address: "",
+    city: "",
+    state: "",
+    bedrooms: 0,
+    bathrooms: 0,
+    areaLength: 0,
+    areaWidth: 0,
+    areaUnit: "m²",
+    isFavorite: false,
+  };
 
-
+  const [formValue, setFormValue] = useState(initialFormValue);
   const [imageFile, setImageFile] = useState(null);
   const [error, setError] = useState("");
+  const queryClient = useQueryClient();
 
-  const [formValue, setFormValue] = useState({
-    title: "",
-    price: { amount: "", period: "month", currency: "BIRR" },
-    propertyType: "Apartment",
-    status: "For Sale",
-    location: { address: "", city: "", state: "" },
-    details: { bedrooms: "", bathrooms: "", area: { length: "", width: "", unit: "m²" } },
-    isFavorite: false,
-  });
+  const isEdit = Boolean(property);
 
-   const handleClose = () => {
+  useEffect(() => {
+    if (isEdit) {
+      setFormValue({
+        title: property.title || "",
+        price: property.price || "",
+        pricePeriod: property.pricePeriod || "month",
+        currency: property.currency || "BIRR",
+        propertyType: property.propertyType || "Apartment",
+        status: property.status || "For Sale",
+        address: property.address || "",
+        city: property.city || "",
+        state: property.state || "",
+        bedrooms: property.bedrooms || 0,
+        bathrooms: property.bathrooms || 0,
+        areaLength: property.areaLength || 0,
+        areaWidth: property.areaWidth || 0,
+        areaUnit: property.areaUnit || "m²",
+        isFavorite: property.isFavorite || false,
+      });
+      setImageFile(null);
+      setError("");
+    } else {
+      setFormValue(initialFormValue);
+      setImageFile(null);
+      setError("");
+    }
+  }, [property, open]);
+
+  const handleClose = () => {
     setFormValue(initialFormValue);
     setImageFile(null);
     setError("");
@@ -51,91 +80,46 @@ const PropertyForm = ({ open, onOpenChange }) => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-
-    setFormValue((prev) => {
-      if (name.startsWith("price.")) {
-        return { ...prev, price: { ...prev.price, [name.split(".")[1]]: value } };
-      }
-      if (name.startsWith("location.")) {
-        return { ...prev, location: { ...prev.location, [name.split(".")[1]]: value } };
-      }
-      if (name.startsWith("details.")) {
-        return {
-          ...prev,
-          details: {
-            ...prev.details,
-            [name.split(".")[1]]:
-              name.includes("area")
-                ? { ...prev.details.area, [name.split(".")[2]]: value }
-                : value,
-          },
-        };
-      }
-      if (name === "isFavorite") return { ...prev, isFavorite: checked };
-
-      if (name === "propertyType") {
-  return {
-    ...prev,
-    propertyType: value // ← move to root, not inside price
-  };
-}
-if (name === "status") {
-  return {
-    ...prev,
-    status: value 
-  };
-}
-      return { ...prev, [name]: value };
-    });
+    setFormValue((prev) => ({ ...prev, [name]: type === "checkbox" ? checked : value }));
   };
 
   const handleFileChange = (e) => setImageFile(e.target.files[0]);
-const queryclient=useQueryClient()
-  const PropertyMutation = useMutation({
-    mutationFn: async (ProData) => {
-      const response = await api.post("/property", ProData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      return response.data;
-    },
-    onSuccess: () =>{
-        queryclient.invalidateQueries(['property'])
-        onOpenChange(false)
 
-    } ,
+  const mutation = useMutation({
+    mutationFn: async ({ formData, id }) => {
+      if (id) {
+        return await api.put(`/property/${id}`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+      } else {
+        return await api.post("/property", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["property"]);
+      toast.success(isEdit ? "Property updated successfully!" : "Property created successfully!");
+      onOpenChange(false);
+    },
     onError: (err) => extractErrorMessages(err, setError),
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     const formData = new FormData();
-    formData.append("title", formValue.title);
-    formData.append("price.amount", formValue.price.amount);
-    formData.append("price.period", formValue.price.period);
-    formData.append("price.currency", formValue.price.currency);
-    formData.append("propertyType", formValue.propertyType);
-    formData.append("status", formValue.status);
-    formData.append("location.address", formValue.location.address);
-    formData.append("location.city", formValue.location.city);
-    formData.append("location.state", formValue.location.state);
-    formData.append("details.bedrooms", formValue.details.bedrooms);
-    formData.append("details.bathrooms", formValue.details.bathrooms);
-    formData.append("details.area.length", formValue.details.area.length);
-    formData.append("details.area.width", formValue.details.area.width);
-    formData.append("details.area.unit", formValue.details.area.unit);
-    formData.append("isFavorite", formValue.isFavorite);
 
+    Object.entries(formValue).forEach(([key, val]) => formData.append(key, val));
     if (imageFile) formData.append("image", imageFile);
 
-    PropertyMutation.mutate(formData);
+    mutation.mutate({ formData, id: property?._id });
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-lg">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold">Add New Property</DialogTitle>
+          <DialogTitle className="text-xl font-bold">{isEdit ? "Edit Property" : "Add New Property"}</DialogTitle>
           <DialogDescription>Fill in all required fields to add a property.</DialogDescription>
         </DialogHeader>
 
@@ -150,30 +134,23 @@ const queryclient=useQueryClient()
 
           {/* Image */}
           <div className="space-y-2">
-            <Label htmlFor="image">Property Image *</Label>
-            <Input id="image" type="file" accept="image/*" onChange={handleFileChange}  />
+            <Label htmlFor="image">Property Image</Label>
+            <Input id="image" type="file" accept="image/*" onChange={handleFileChange} />
           </div>
 
           {/* Price */}
           <div className="space-y-2">
             <Label>Price *</Label>
             <div className="flex gap-2">
-              <Input
-                name="price.amount"
-                type="number"
-                placeholder="Amount"
-                value={formValue.price.amount}
-                onChange={handleChange}
-                required
-              />
-              <Select value={formValue.price.period} onValueChange={(v) => handleChange({ target: { name: "price.period", value: v } })}>
+              <Input name="price" type="number" placeholder="Amount" value={formValue.price} onChange={handleChange} required />
+              <Select value={formValue.pricePeriod} onValueChange={(v) => handleChange({ target: { name: "pricePeriod", value: v } })}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="month">Month</SelectItem>
                   <SelectItem value="year">Year</SelectItem>
                 </SelectContent>
               </Select>
-              <Input name="price.currency" value={formValue.price.currency} onChange={handleChange} />
+              <Input name="currency" value={formValue.currency} onChange={handleChange} />
             </div>
           </div>
 
@@ -206,10 +183,10 @@ const queryclient=useQueryClient()
           {/* Location */}
           <div className="space-y-2">
             <Label>Location *</Label>
-            <Input name="location.address" placeholder="Street Address" value={formValue.location.address} onChange={handleChange} required />
             <div className="flex gap-2">
-              <Input name="location.city" placeholder="City" value={formValue.location.city} onChange={handleChange} required />
-              <Input name="location.state" placeholder="State" value={formValue.location.state} onChange={handleChange} required />
+              <Input name="address" placeholder="Street Address" value={formValue.address} onChange={handleChange} required />
+              <Input name="city" placeholder="City" value={formValue.city} onChange={handleChange} required />
+              <Input name="state" placeholder="State" value={formValue.state} onChange={handleChange} required />
             </div>
           </div>
 
@@ -217,13 +194,11 @@ const queryclient=useQueryClient()
           <div className="space-y-2">
             <Label>Details *</Label>
             <div className="flex gap-2">
-              <Input name="details.bedrooms" type="number" placeholder="Bedrooms" value={formValue.details.bedrooms} onChange={handleChange} required />
-              <Input name="details.bathrooms" type="number" placeholder="Bathrooms" value={formValue.details.bathrooms} onChange={handleChange} required />
-            </div>
-            <div className="flex gap-2">
-              <Input name="details.area.length" type="number" placeholder="Length" value={formValue.details.area.length} onChange={handleChange} />
-              <Input name="details.area.width" type="number" placeholder="Width" value={formValue.details.area.width} onChange={handleChange} />
-              <Input name="details.area.unit" value={formValue.details.area.unit} onChange={handleChange} />
+              <Input name="bedrooms" type="number" placeholder="Bedrooms" value={formValue.bedrooms} onChange={handleChange} required />
+              <Input name="bathrooms" type="number" placeholder="Bathrooms" value={formValue.bathrooms} onChange={handleChange} required />
+              <Input name="areaLength" type="number" placeholder="Length" value={formValue.areaLength} onChange={handleChange} />
+              <Input name="areaWidth" type="number" placeholder="Width" value={formValue.areaWidth} onChange={handleChange} />
+              <Input name="areaUnit" placeholder="Unit" value={formValue.areaUnit} onChange={handleChange} />
             </div>
           </div>
 
@@ -235,8 +210,8 @@ const queryclient=useQueryClient()
 
           <DialogFooter className="flex justify-end space-x-2">
             <Button type="button" variant="outline" onClick={handleClose}>Cancel</Button>
-            <Button type="submit" disabled={PropertyMutation.isLoading}>
-              {PropertyMutation.isLoading ? "Saving..." : "Add Property"}
+            <Button type="submit" disabled={mutation.isLoading}>
+              {mutation.isLoading ? "Saving..." : isEdit ? "Update Property" : "Add Property"}
             </Button>
           </DialogFooter>
         </form>

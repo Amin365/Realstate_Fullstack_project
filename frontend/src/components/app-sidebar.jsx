@@ -78,7 +78,7 @@ export function AppSidebar(props) {
             <Link
               key={item.title}
               to={item.url}
-              className="flex items-center gap-2 rounded px-3 py-2 text-sm hover:bg-gray-200"
+              className="flex items-center gap-2 rounded px-3 py-2 text-sm hover:bg-gray-500"
             >
               <item.icon className="!size-5" />
               <span>{item.title}</span>

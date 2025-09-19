@@ -21,6 +21,8 @@ const PropertyTable = ({ onEdit }) => {
     },
   });
 
+  console.log("proper",properties)
+
   if (isLoading) return <p className="text-center mt-4">Loading properties...</p>;
   if (isError) return <p className="text-center mt-4 text-red-500">Error: {error.message}</p>;
 
@@ -29,7 +31,7 @@ const PropertyTable = ({ onEdit }) => {
       <Table className="w-full mt-6 shadow-md rounded-lg border">
         <TableCaption className="text-lg font-semibold">List of Properties</TableCaption>
         <TableHeader>
-          <TableRow className="bg-gray-100">
+          <TableRow className="">
             <TableHead>Name</TableHead>
             <TableHead>Status</TableHead>
             <TableHead>Property Type</TableHead>
@@ -59,7 +61,7 @@ const PropertyTable = ({ onEdit }) => {
                 </TableCell>
                 <TableCell>{property.propertyType}</TableCell>
                 <TableCell className="text-right">
-                  {property.price.currency} {property.price.amount} / {property.price.period}
+                  {property.currency} {property.amount} / {property.period}/{property.image}
                 </TableCell>
                 <TableCell className="text-right space-x-2">
                   <TooltipProvider>

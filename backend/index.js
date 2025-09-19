@@ -22,11 +22,15 @@ app.use(helmet());
 // Parse JSON bodies
 app.use(express.json());
 
+
+
 // Enable CORS for frontend
 app.use(cors({
   origin: ['http://localhost:5173'], // your React dev server
  
 }));
+
+app.use("/uploads", express.static(path.join(path.resolve(), "uploads")));
 
 // Routes
 app.use('/api', Authrouter);
