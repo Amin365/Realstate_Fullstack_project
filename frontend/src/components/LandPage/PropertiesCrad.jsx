@@ -54,6 +54,12 @@ const PropertiesCard = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div>
+     <h1 className="text-2xl font-bold text-center mb-5">Based on Your Location</h1>
+    <p className="text-center  text-gray-400 mb-5">Find the best properties available in your area.</p>
+
+    </div>
+   
       {/* Filter Bar */}
       <div className="rounded-2xl p-6 mb-8 space-y-4">
         <h2 className="text-xl font-bold flex items-center gap-2 text-gray-800">

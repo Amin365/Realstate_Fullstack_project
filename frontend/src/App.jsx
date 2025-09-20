@@ -5,6 +5,7 @@ import ProtectedRoute from "./pages/ProtectedRoute";
 import LoginPage from "./pages/Auth/LoginPage";
 import RegsiterPage from "./pages/Auth/RegisterPage";
 import HomePage from "./pages/HomePage";
+import PropertiesCard from "./components/LandPage/PropertiesCrad";
 
 
 export default function App() {
@@ -14,8 +15,10 @@ export default function App() {
       {/* <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} /> */}
       <Route path="/login" element={<LoginPage/> }  />
-      <Route path="register" element={<RegsiterPage/>} />
+      <Route path="/register" element={<RegsiterPage/>} />
       <Route path="/" element={<HomePage/>} />
+
+      <Route path="/propertycards" element={<PropertiesCard />} />
 
       {/* Dashboard Layout */}
       <Route

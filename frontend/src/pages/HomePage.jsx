@@ -1,23 +1,38 @@
-import MainHeader from "../components/Header"
+
+import RealEstateFAQs from "../components/LandPage/Faq"
 import Features from "../components/LandPage/features"
-import Hero from "../components/LandPage/Hero"
-import Navbar from "../components/LandPage/Navbar"
+
+
+import HeroSection from "../components/LandPage/HeroSection"
+import { HeroHeader } from "../components/LandPage/Navbar"
+
 import PropertiesCard from "../components/LandPage/PropertiesCrad"
-import { ModeToggle } from "../components/mode-toggle"
-import { SiteHeader } from "../components/site-header"
+import Testimonials from "../components/LandPage/Testomony"
+
 
 
 const HomePage =()=>{
     return(
-        <div className="min-h-screen bg-gradient-to-b from-rose-100 to-white">
-    <Navbar/>
-    <Hero/>
+
+        <div>
+             <HeroHeader/>
+        
+        <div className="min-h-screen bg-gradient-to-b from-rose-100 to-whit">
+       
+
+
+    <HeroSection/>
 
     <Features/>
+   
 
     <PropertiesCard/>
+
+    <Testimonials/>
+    <RealEstateFAQs/>
            
           
+        </div>
         </div>
     )
 }
