@@ -5,7 +5,10 @@ import ProtectedRoute from "./pages/ProtectedRoute";
 import LoginPage from "./pages/Auth/LoginPage";
 import RegsiterPage from "./pages/Auth/RegisterPage";
 import HomePage from "./pages/HomePage";
-import PropertiesCard from "./components/LandPage/PropertiesCrad";
+import PropertiesDetals from "./components/properties/PropertDetails";
+import PropertyDetailPage from "./components/properties/PropertyDetailPage";
+import PropertyCard from "./components/LandPage/PropertiesCrad";
+
 
 
 export default function App() {
@@ -17,8 +20,11 @@ export default function App() {
       <Route path="/login" element={<LoginPage/> }  />
       <Route path="/register" element={<RegsiterPage/>} />
       <Route path="/" element={<HomePage/>} />
+      <Route path='/propertydetails' element={<PropertiesDetals/>}/>
+       <Route path="/propertydetails/:id" element={<PropertyDetailPage />} />
 
-      <Route path="/propertycards" element={<PropertiesCard />} />
+       <Route path='/propertycards' element={<PropertyCard/>}/>
+       <Route path="/propertydetails/:id" element={<PropertyCard />} />
 
       {/* Dashboard Layout */}
       <Route

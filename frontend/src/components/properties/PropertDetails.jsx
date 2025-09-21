@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/select";
 import { HeroHeader } from "../LandPage/Navbar";
 
-const PropertyCard = () => {
+const PropertiesDetals = () => {
   const [filters, setFilters] = useState({
     location: "any",
     propertyType: "any",
@@ -182,4 +182,4 @@ const PropertyCard = () => {
   );
 };
 
-export default PropertyCard;
+export default PropertiesDetals;

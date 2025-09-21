@@ -53,7 +53,7 @@ export const GetAllProperties = async (req, res, next) => {
     const properties = await property
       .find()
       .sort({ createdAt: -1 })
-      .limit(4); 
+     
 
     res.status(200).json(properties);
   } catch (error) {
@@ -61,6 +61,16 @@ export const GetAllProperties = async (req, res, next) => {
   }
 };
 
+export const GetPropertyById = async (req, res, next) => {
+  try {
+    const propertyId = req.params.id;
+    const foundProperty = await property.findById(propertyId);
+    if (!foundProperty) return res.status(404).json({ success: false, message: "Property not found" });
+    res.status(200).json(foundProperty);
+  } catch (error) {
+    next(error);
+  }
+}
 
 // UPDATE PROPERTY
 export const updateProperty = async (req, res, next) => {

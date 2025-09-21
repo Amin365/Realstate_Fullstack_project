@@ -199,6 +199,7 @@ const PropertyForm = ({ open, onOpenChange, property }) => {
                 <SelectContent>
                   <SelectItem value="For Sale">For Sale</SelectItem>
                   <SelectItem value="For Rent">For Rent</SelectItem>
+                  
                 </SelectContent>
               </Select>
             </div>

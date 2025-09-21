@@ -1,5 +1,5 @@
 import express from "express";
-import { CreateProperty, GetAllProperties, GetmyProperty, updateProperty } from "../controllers/propertyControls.js";
+import { CreateProperty, GetAllProperties, GetmyProperty, GetPropertyById, updateProperty } from "../controllers/propertyControls.js";
 import { protect } from "../middleware/auth.js";
 import multer from "multer";
 import path from "path";
@@ -40,6 +40,8 @@ PropertyRouter.get("/property", protect, GetmyProperty);
 
 // ----------------- GET ALL PROPERTIES (PUBLIC) -----------------
 PropertyRouter.get("/properties", GetAllProperties);
+
+PropertyRouter.get("/properties/:id", GetPropertyById);
 
 // ----------------- UPDATE PROPERTY -----------------
 PropertyRouter.put("/property/:id", protect, upload.single("image"), updateProperty);

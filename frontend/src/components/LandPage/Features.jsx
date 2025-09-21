@@ -4,7 +4,7 @@ import { FiHome, FiShield, FiDollarSign, FiTrendingUp, FiSettings } from "react-
 
 const Features = () => {
   return (
-    <section className="py-16">
+    <section className="py-16 mt-12">
       <div className="max-w-7xl mx-auto px-6">
         {/* Section Title */}
         <h2 className="text-3xl font-bold text-gray-800 mb-12 text-center">

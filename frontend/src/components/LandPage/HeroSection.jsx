@@ -55,7 +55,7 @@ export default function HeroSection() {
               <div className="text-center sm:mx-auto lg:mr-auto lg:mt-0">
                 {/* Link box */}
                 <Link
-                  to="/propertycards"
+                  to="/propertydetails"
                   className="hover:bg-background dark:hover:border-t-border bg-muted group mx-auto flex w-fit items-center gap-4 rounded-full border p-1 pl-4 shadow-md shadow-zinc-950/5 transition-colors duration-300 dark:border-t-white/5 dark:shadow-zinc-950"
                 >
                   <span className="text-foreground text-sm">
@@ -86,14 +86,30 @@ export default function HeroSection() {
                 </p>
 
                 {/* Buttons */}
-                <div className="mt-12 flex flex-col items-center justify-center gap-2 md:flex-row">
-                  <div className="bg-foreground/10 rounded-[calc(var(--radius-xl)+0.125rem)] border p-0.5">
-                    <Link className="rounded-xl px-5 py-2 text-base bg-black text-white" to={"/propertycards"}>
-                      Browse your properties
-                    </Link>
+               <div className="mt-12 flex flex-col items-center justify-center gap-2 md:flex-row">
+  <div className=" ">
+      <Link
+                  to="/propertydetails"
+                  className=" dark:hover:border-t-border bg-black text-white group mx-auto flex w-fit items-center gap-4 rounded-full border p-1 pl-4 shadow-md shadow-zinc-950/5 transition-colors duration-300 dark:border-t-white/5 dark:shadow-zinc-950"
+                >
+                  <span className="text-foreground text-sm text-white">
+                   Browse Your Properties
+                  </span>
+                  <span className="dark:border-background block h-4 w-0.5 border-l bg-white dark:bg-zinc-700"></span>
+                  <div className=" size-6 overflow-hidden rounded-full duration-500">
+                    <div className="flex w-12 -translate-x-1/2 duration-500 ease-in-out group-hover:translate-x-0">
+                      <span className="flex size-6">
+                        <ArrowRight className="m-auto size-3" />
+                      </span>
+                      <span className="flex size-6">
+                        <ArrowRight className="m-auto size-3" />
+                      </span>
+                    </div>
                   </div>
-                  
-                </div>
+                </Link>
+  </div>
+</div>
+
               </div>
             </div>
 
