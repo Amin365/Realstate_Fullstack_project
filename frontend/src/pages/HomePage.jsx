@@ -1,7 +1,8 @@
 
 import CallToAction from "../components/LandPage/Callaction"
 import RealEstateFAQs from "../components/LandPage/Faq"
-import Features from "../components/LandPage/features"
+import Features from "../components/LandPage/FeaturesPage"
+
 
 
 import HeroSection from "../components/LandPage/HeroSection"
