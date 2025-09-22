@@ -10,9 +10,10 @@ import { cn } from "@/lib/utils"
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import {  useNavigate } from "react-router";
-import axios from 'axios'
+
 import { LoaderCircle } from "lucide-react";
 import { toast } from "sonner"
+import api from "../../lib/api/CleintApi";
 
 
 export function RegisterForm({ className, ...props }) {
@@ -47,9 +48,9 @@ export function RegisterForm({ className, ...props }) {
       navigate("/login");
     },
     onError: (error) => {
-     
-      toast(error)
-      setError(error.response?.data?.message || "Something went wrong");
+      const message = error.response?.data?.message || error.message || "Something went wrong";
+      toast(message);
+      setError(message);
     },
   });
 
