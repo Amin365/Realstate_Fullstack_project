@@ -21,6 +21,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 const PropertyDetailPage = () => {
   const { id } = useParams();
@@ -53,11 +54,11 @@ const PropertyDetailPage = () => {
     try {
       // example POST request (adjust API path to your backend)
       const res = await api.post(`/properties/${id}/request`, formData);
-      alert("Request sent successfully!");
-      console.log("Tenant request:", res.data);
+      toast.success("Request sent successfully!");
+     
     } catch (err) {
-      console.error(err);
-      alert("Error submitting request");
+      toast.error(err);
+      toast.error("Error submitting request");
     }
   };
 

@@ -37,7 +37,7 @@ export function RegisterForm({ className, ...props }) {
   const RegisterMutation = useMutation({
     mutationFn: async (userData) => {
       const response = await axios.post(
-        "http://localhost:4300/api/auth/register",
+        "http://localhost:4800/api/auth/register",
         userData
       );
       return response.data;
@@ -48,7 +48,7 @@ export function RegisterForm({ className, ...props }) {
       navigate("/login");
     },
     onError: (error) => {
-      console.log("Registration failed:", error);
+     
       toast(error)
       setError(error.response?.data?.message || "Something went wrong");
     },

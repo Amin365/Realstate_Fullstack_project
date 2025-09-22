@@ -45,7 +45,7 @@ app.use(NotFound);
 app.use(ErrorHandle);
 
 // Connect to MongoDB
-mongoose.connect(process.env.mongodb_url)
+mongoose.connect(process.env.NODE_ENV === "development" ? process.env.mongodb_url : process.env.Mongodb_pro)
   .then(() => console.log('✅ Connected to MongoDB successfully'))
   .catch((error) => console.log('❌ MongoDB Connection Error:', error));
 

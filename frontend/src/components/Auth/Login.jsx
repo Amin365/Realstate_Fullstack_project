@@ -16,6 +16,10 @@ import { setAuth } from "../../lib/Reduxs/authSlice.js"
 export function LoginForm({ className, ...props }) {
   const navigate = useNavigate()
   const disptach =useDispatch()
+
+  const{user,token}=useSelector(state=>state.auth)
+
+ 
  
  
   const [formValue, setFormValue] = useState({
@@ -44,7 +48,13 @@ export function LoginForm({ className, ...props }) {
     onSuccess: (data) => {
       if(data.token){
         disptach(setAuth({user:data.user,token:data.token}))
-        navigate("/dashboard",{ replace: true })
+      if(data.user.role==="admin"){
+       navigate("/dashboard",{ replace: true })
+      }
+      else{
+        navigate("/",{ replace: true })
+      }
+       
       }
     },
     onError: (err) => {

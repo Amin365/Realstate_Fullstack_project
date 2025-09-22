@@ -21,7 +21,6 @@ const PropertyTable = ({ onEdit }) => {
     },
   });
 
-  console.log("proper",properties)
 
   if (isLoading) return <p className="text-center mt-4">Loading properties...</p>;
   if (isError) return <p className="text-center mt-4 text-red-500">Error: {error.message}</p>;

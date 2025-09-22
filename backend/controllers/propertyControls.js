@@ -2,8 +2,7 @@
 
 
 import property from "../models/Property.js";
-import fs from "fs";
-import path from "path";
+
 
 // CREATE PROPERTY
 export const CreateProperty = async (req, res, next) => {

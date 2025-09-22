@@ -1,18 +1,18 @@
+
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useQuery } from '@tanstack/react-query'
-import { Navigate, useLocation } from 'react-router'
+import { Navigate } from 'react-router'
 import { Loader } from 'lucide-react'
 
 import api from '../lib/api/CleintApi.js'
 import { setAuth, setClear } from '../lib/Reduxs/authSlice.js'
 
-function ProtectedRoute({ children }) {
-  const location = useLocation()
+function ProtectedAdmin({ children }) {
   const dispatch = useDispatch()
   const { user, token } = useSelector((state) => state.auth) || {}
 
-  // Fetch current user only if we have a token
+  // ✅ Fetch current user only if token exists
   const { data, isSuccess, isLoading, isError } = useQuery({
     queryKey: ["CurrentUser"],
     queryFn: async () => {
@@ -23,19 +23,21 @@ function ProtectedRoute({ children }) {
     retry: 1,
   })
 
+
   useEffect(() => {
     if (isSuccess && data?.user) {
       dispatch(setAuth({ user: data.user, token }))
     }
   }, [isSuccess, data, token, dispatch])
 
+  
   useEffect(() => {
     if (isError) {
-      dispatch(setClear()) // ✅ fixed action
+      dispatch(setClear())
     }
   }, [isError, dispatch])
 
-  // Show loading UI
+  // ✅ Loading UI
   if (isLoading) {
     return (
       <div className="flex h-screen items-center justify-center bg-gray-50">
@@ -47,12 +49,16 @@ function ProtectedRoute({ children }) {
     )
   }
 
-  // Redirect if no user or API error
-  if (!user || isError) {
-    return <Navigate to="/login" state={{ from: location }} replace  />
+  // ✅ Redirect if no user or not admin
+//   if (!user || isError) {
+//     return <Navigate to="/login" replace />
+//   }
+
+  if (user.role !== "admin") {
+    return <Navigate to="/login" replace /> 
   }
 
   return children
 }
 
-export default ProtectedRoute
+export default ProtectedAdmin

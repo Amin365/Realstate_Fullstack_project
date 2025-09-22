@@ -8,6 +8,8 @@ import HomePage from "./pages/HomePage";
 import PropertiesDetals from "./components/properties/PropertDetails";
 import PropertyDetailPage from "./components/properties/PropertyDetailPage";
 import PropertyCard from "./components/LandPage/PropertiesCrad";
+import ProtectedAdmin from "./pages/Protectedadmin";
+import ProfilePage from "./pages/profilePage";
 
 
 
@@ -21,18 +23,18 @@ export default function App() {
       <Route path="/register" element={<RegsiterPage/>} />
       <Route path="/" element={<HomePage/>} />
       <Route path='/propertydetails' element={<PropertiesDetals/>}/>
-       <Route path="/propertydetails/:id" element={<PropertyDetailPage />} />
+       <Route path="/propertydetails/:id" element={ <ProtectedRoute>  <PropertyDetailPage /> </ProtectedRoute>} />
+       <Route path='/profile' element={<ProfilePage />} />
 
-       <Route path='/propertycards' element={<PropertyCard/>}/>
-       <Route path="/propertydetails/:id" element={<PropertyCard />} />
+       <Route path="/propertydetails/:id" element={<ProtectedRoute> <PropertyCard /> </ProtectedRoute>} />
 
       {/* Dashboard Layout */}
       <Route
         path="/dashboard"
         element={
-          <ProtectedRoute>
+          <ProtectedAdmin>
             <Dashboard />
-          </ProtectedRoute>
+          </ProtectedAdmin>
         }
       >
         <Route path="properties" element={<Properties />} />

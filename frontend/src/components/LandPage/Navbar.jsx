@@ -3,6 +3,8 @@ import { Button } from '@/components/ui/button'
 import React, { useState, useEffect } from 'react'
 import { cn } from '@/lib/utils'
 import { Link } from 'react-router-dom'
+import { useSelector } from "react-redux"
+import MainHeader from '../Header'
 
 const menuItems = [
   { name: 'Features', href: '#features' },
@@ -21,6 +23,9 @@ export const HeroHeader = () => {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  // get token + user from redux
+  const { token, user } = useSelector((state) => state.auth)
+
   return (
     <header>
       <nav
@@ -37,14 +42,12 @@ export const HeroHeader = () => {
           <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0 lg:py-4">
             {/* Logo + Mobile Menu Button */}
             <div className="flex w-full justify-between lg:w-auto">
-
-            <div className='space-x-3 flex items-center '>
-              <Link to="/" aria-label="home" className="flex items-center text-muted-foreground space-x-2">
-                <HomeIcon />
-              </Link>
-              <h1 className="text-muted-foreground">Waansan RealState</h1>
-            </div>
-             
+              <div className="space-x-3 flex items-center">
+                <Link to="/" aria-label="home" className="flex items-center text-gray-500 space-x-2">
+                  <HomeIcon />
+                </Link>
+                <h1>Waansan RealState</h1>
+              </div>
 
               <button
                 onClick={() => setMenuState(!menuState)}
@@ -72,9 +75,9 @@ export const HeroHeader = () => {
               </ul>
             </div>
 
-            {/* Right Section (Buttons + Mobile Menu) */}
+            {/* Right Section */}
             <div className="bg-background in-data-[state=active]:block lg:in-data-[state=active]:flex mb-6 hidden w-full flex-wrap items-center justify-end space-y-8 rounded-3xl border p-6 shadow-2xl shadow-zinc-300/20 md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent">
-              
+
               {/* Mobile Menu Links */}
               <div className="lg:hidden">
                 <ul className="space-y-6 text-base">
@@ -91,36 +94,48 @@ export const HeroHeader = () => {
                 </ul>
               </div>
 
-              {/* Auth Buttons */}
-              <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
-                {/* Login Button */}
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className={cn(isScrolled && 'lg:hidden')}
-                  asChild
-                >
-                  <Link to="/login">Login</Link>
-                </Button>
+              {/* Auth Section */}
+              {token ? (
+                <div className="flex items-center gap-3">
+                  {/* Username */}
+                 
 
-                {/* Sign Up Button */}
-                <Button
-                  size="sm"
-                  className={cn(isScrolled && 'lg:hidden')}
-                  asChild
-                >
-                  <Link to="/register">Sign Up</Link>
-                </Button>
+                  
+                  <div>
+                  <MainHeader/>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
+                  {/* Login Button */}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className={cn(isScrolled && 'lg:hidden')}
+                    asChild
+                  >
+                    <Link to="/login">Login</Link>
+                  </Button>
 
-                {/* Get Started Button */}
-                <Button
-                  size="sm"
-                  className={cn(isScrolled ? 'lg:inline-flex' : 'hidden')}
-                  asChild
-                >
-                  <Link to="/register">Get Started</Link>
-                </Button>
-              </div>
+                  {/* Sign Up Button */}
+                  <Button
+                    size="sm"
+                    className={cn(isScrolled && 'lg:hidden')}
+                    asChild
+                  >
+                    <Link to="/register">Sign Up</Link>
+                  </Button>
+
+                  {/* Get Started Button */}
+                  <Button
+                    size="sm"
+                    className={cn(isScrolled ? 'lg:inline-flex' : 'hidden')}
+                    asChild
+                  >
+                    <Link to="/register">Get Started</Link>
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
         </div>

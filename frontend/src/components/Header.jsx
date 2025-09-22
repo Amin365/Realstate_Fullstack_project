@@ -15,6 +15,7 @@ import { FaRegUser } from "react-icons/fa";
 import { MdLogout } from "react-icons/md";
 import { Building2, Users } from "lucide-react";
 import { setClear } from "../lib/Reduxs/authSlice";
+import { useQuery } from "@tanstack/react-query";
 
 const MainHeader = () => {
   const { token, user } = useSelector((state) => state.auth);
@@ -25,6 +26,16 @@ const navigate=useNavigate()
     navigate('/login')
   }
 
+const { data } = useQuery({
+  queryKey: ["userProfile"],
+  queryFn: async () => {
+    const res = await api.get("/auth/profile");
+    return res.data;
+  },
+  enabled: !!token, // Only run this query if token exists
+  staleTime: 5 * 60 * 1000, // 5 minutes
+  cacheTime: 30 * 60 * 1000, // 30 minutes
+});
   return (
     <header className="px-4">
       <div className="max-w-7xl mx-auto px-8 md:px-6 lg:px-8">
