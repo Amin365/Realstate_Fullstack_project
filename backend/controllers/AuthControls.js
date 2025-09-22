@@ -1,5 +1,6 @@
 import User from "../models/user.js";
-import {GenarateToken} from "../utility/jwt.js";
+import { GenarateToken } from "../utility/JwtGenarate.js";
+
 
 
 
