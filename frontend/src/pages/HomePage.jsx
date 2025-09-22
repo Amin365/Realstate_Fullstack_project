@@ -1,7 +1,8 @@
 
 import CallToAction from "../components/LandPage/Callaction"
 import RealEstateFAQs from "../components/LandPage/Faq"
-import Features from "../components/LandPage/FeaturesPage"
+import FeaturePage from "../components/LandPage/FeaturesPage"
+
 
 
 
@@ -25,7 +26,7 @@ const HomePage =()=>{
 
     <HeroSection/>
 
-    <Features/>
+    <FeaturePage/>
    
 
     <PropertiesCard/>

@@ -4,7 +4,7 @@
 import { LifeBuoy } from "lucide-react";
 import { FiHome, FiShield, FiDollarSign, FiTrendingUp, FiSettings } from "react-icons/fi";
 
-const Features = () => {
+const FeaturePage = () => {
   return (
     <section className="py-16 mt-12">
       <div className="max-w-7xl mx-auto px-6">
@@ -73,4 +73,4 @@ const Features = () => {
   );
 };
 
-export default Features;
+export default FeaturePage;
