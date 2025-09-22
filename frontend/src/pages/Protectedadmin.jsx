@@ -1,18 +1,18 @@
-
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useQuery } from '@tanstack/react-query'
-import { Navigate } from 'react-router'
+import { Navigate, useLocation } from 'react-router'
 import { Loader } from 'lucide-react'
 
 import api from '../lib/api/CleintApi.js'
 import { setAuth, setClear } from '../lib/Reduxs/authSlice.js'
 
-function ProtectedAdmin({ children }) {
+function ProtectedRoute({ children, requiredRole }) {
+  const location = useLocation()
   const dispatch = useDispatch()
   const { user, token } = useSelector((state) => state.auth) || {}
 
-  // ✅ Fetch current user only if token exists
+  // Fetch current user only if we have a token
   const { data, isSuccess, isLoading, isError } = useQuery({
     queryKey: ["CurrentUser"],
     queryFn: async () => {
@@ -23,21 +23,19 @@ function ProtectedAdmin({ children }) {
     retry: 1,
   })
 
-
   useEffect(() => {
     if (isSuccess && data?.user) {
       dispatch(setAuth({ user: data.user, token }))
     }
   }, [isSuccess, data, token, dispatch])
 
-  
   useEffect(() => {
     if (isError) {
       dispatch(setClear())
     }
   }, [isError, dispatch])
 
-  // ✅ Loading UI
+  // Show loading UI
   if (isLoading) {
     return (
       <div className="flex h-screen items-center justify-center bg-gray-50">
@@ -49,16 +47,17 @@ function ProtectedAdmin({ children }) {
     )
   }
 
-  // ✅ Redirect if no user or not admin
-//   if (!user || isError) {
-//     return <Navigate to="/login" replace />
-//   }
+  // Redirect if not logged in
+  if (!user || isError) {
+    return <Navigate to="/login" state={{ from: location }} replace />
+  }
 
-  if (user.role !== "admin") {
-    return <Navigate to="/login" replace /> 
+  // ✅ Check if user has the required role (if provided)
+  if (requiredRole && user.role !== requiredRole) {
+    return <Navigate to="/login" state={{ from: location }} replace />
   }
 
   return children
 }
 
-export default ProtectedAdmin
+export default ProtectedRoute

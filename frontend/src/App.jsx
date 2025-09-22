@@ -32,7 +32,7 @@ export default function App() {
       <Route
         path="/dashboard"
         element={
-          <ProtectedAdmin>
+          <ProtectedAdmin requiredRole="admin">
             <Dashboard />
           </ProtectedAdmin>
         }

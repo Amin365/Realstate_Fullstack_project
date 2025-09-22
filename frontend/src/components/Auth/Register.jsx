@@ -14,6 +14,7 @@ import axios from 'axios'
 import { LoaderCircle } from "lucide-react";
 import { toast } from "sonner"
 
+
 export function RegisterForm({ className, ...props }) {
   const navigate = useNavigate();
 
@@ -36,9 +37,7 @@ export function RegisterForm({ className, ...props }) {
 
   const RegisterMutation = useMutation({
     mutationFn: async (userData) => {
-      const response = await axios.post(
-        "http://localhost:4800/api/auth/register",
-        userData
+      const response = await api.post( "auth/register",userData
       );
       return response.data;
     },

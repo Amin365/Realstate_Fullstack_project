@@ -2,6 +2,7 @@
 import CallToAction from "../components/LandPage/Callaction"
 import RealEstateFAQs from "../components/LandPage/Faq"
 import FeaturePage from "../components/LandPage/FeaturesPage"
+import FooterSection from "../components/LandPage/Footer"
 
 
 
@@ -35,6 +36,7 @@ const HomePage =()=>{
     <RealEstateFAQs/>
 
     <CallToAction/>
+    <FooterSection/>
            
           
         </div>

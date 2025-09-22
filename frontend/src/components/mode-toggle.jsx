@@ -1,5 +1,4 @@
 import { Moon, Sun } from "lucide-react"
-
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -8,9 +7,21 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useTheme } from "@/components/theme-provider"
+import { useEffect } from "react"
 
 export function ModeToggle() {
-  const { setTheme } = useTheme()
+  const { theme, setTheme } = useTheme()
+
+  // Load theme from localStorage when component mounts
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme")
+    if (savedTheme) setTheme(savedTheme)
+  }, [setTheme])
+
+  const handleThemeChange = (newTheme) => {
+    setTheme(newTheme)
+    localStorage.setItem("theme", newTheme)
+  }
 
   return (
     <DropdownMenu>
@@ -22,13 +33,13 @@ export function ModeToggle() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setTheme("light")}>
+        <DropdownMenuItem onClick={() => handleThemeChange("light")}>
           Light
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("dark")}>
+        <DropdownMenuItem onClick={() => handleThemeChange("dark")}>
           Dark
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("system")}>
+        <DropdownMenuItem onClick={() => handleThemeChange("system")}>
           System
         </DropdownMenuItem>
       </DropdownMenuContent>
