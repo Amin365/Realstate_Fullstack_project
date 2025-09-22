@@ -22,9 +22,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import dotenv from 'dotenv';
 
-dotenv.config()
+
+
 
 const PropertyDetailPage = () => {
   const { id } = useParams();
@@ -70,12 +70,17 @@ const PropertyDetailPage = () => {
       <Card className="shadow-lg rounded-xl">
         {/* Image */}
         <CardHeader className="p-0">
-          <img
-            crossOrigin="anonymous"
-            src={`${process.env.NODE_ENV==='production'? 'https://realstate-fullstack-project.onrender.com': 'http://localhost:4800'}/uploads/${property.image}`}
-            alt={property.title}
-            className="w-full h-96 object-cover rounded-t-xl"
-          />
+       <img
+  crossOrigin="anonymous"
+  src={`${
+    import.meta.env.MODE === 'production'
+      ? 'https://realstate-fullstack-project.onrender.com'
+      : 'http://localhost:4800'
+  }/uploads/${property.image}`}
+  alt={property.title}
+  className="w-full h-96 object-cover rounded-t-xl"
+/>
+
         </CardHeader>
 
         {/* Property Info */}
