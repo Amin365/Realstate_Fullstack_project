@@ -3,7 +3,7 @@ import store from "../Reduxs/store";
 
 
 // ✅ Base API URL
-const Api_URL ="http://localhost:4800/api"
+const Api_URL = process.env.NODE_ENV === "production" ?"https://realstate-fullstack-project.onrender.com/api":"http://localhost:4800/api"
 
 const api = axios.create({
   baseURL: Api_URL,
