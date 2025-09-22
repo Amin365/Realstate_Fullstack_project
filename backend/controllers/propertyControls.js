@@ -1,7 +1,7 @@
 
 
 
-import property from "../models/Property.js";
+import property from "../models/property.js";
 
 
 // CREATE PROPERTY
