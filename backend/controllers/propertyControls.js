@@ -1,10 +1,6 @@
-
-
-
 import property from "../models/property.js";
 
-
-// CREATE PROPERTY
+// ----------------- CREATE PROPERTY -----------------
 export const CreateProperty = async (req, res, next) => {
   try {
     const newProperty = await property.create({
@@ -23,7 +19,8 @@ export const CreateProperty = async (req, res, next) => {
       areaLength: req.body.areaLength,
       areaWidth: req.body.areaWidth,
       areaUnit: req.body.areaUnit,
-      image: req.file ? req.file.filename : null,
+      // Cloudinary gives us a hosted URL in req.file.path
+      image: req.file ? req.file.path : null,
       createdBy: req.user._id,
     });
 
@@ -33,7 +30,7 @@ export const CreateProperty = async (req, res, next) => {
   }
 };
 
-// GET MY PROPERTIES
+// ----------------- GET MY PROPERTIES -----------------
 export const GetmyProperty = async (req, res, next) => {
   try {
     const properties = await property.find({ createdBy: req.user._id }).sort({ createdAt: -1 });
@@ -43,38 +40,37 @@ export const GetmyProperty = async (req, res, next) => {
   }
 };
 
-
-// public Geters 
-// GET /api/properties
+// ----------------- GET ALL PROPERTIES (PUBLIC) -----------------
 export const GetAllProperties = async (req, res, next) => {
   try {
-    // Fetch latest 4 properties
-    const properties = await property
-      .find()
-      .sort({ createdAt: -1 })
-     
-
+    const properties = await property.find().sort({ createdAt: -1 });
     res.status(200).json(properties);
   } catch (error) {
     next(error);
   }
 };
 
+// ----------------- GET PROPERTY BY ID -----------------
 export const GetPropertyById = async (req, res, next) => {
   try {
     const propertyId = req.params.id;
     const foundProperty = await property.findById(propertyId);
-    if (!foundProperty) return res.status(404).json({ success: false, message: "Property not found" });
+
+    if (!foundProperty) {
+      return res.status(404).json({ success: false, message: "Property not found" });
+    }
+
     res.status(200).json(foundProperty);
   } catch (error) {
     next(error);
   }
-}
+};
 
-// UPDATE PROPERTY
+// ----------------- UPDATE PROPERTY -----------------
 export const updateProperty = async (req, res, next) => {
   try {
     const propertyId = req.params.id;
+
     const updateData = {
       title: req.body.title,
       propertyType: req.body.propertyType,
@@ -93,10 +89,16 @@ export const updateProperty = async (req, res, next) => {
       areaUnit: req.body.areaUnit,
     };
 
-    if (req.file) updateData.image = req.file.filename;
+    // Update with Cloudinary URL if new image uploaded
+    if (req.file) {
+      updateData.image = req.file.path;
+    }
 
     const updatedProperty = await property.findByIdAndUpdate(propertyId, updateData, { new: true });
-    if (!updatedProperty) return res.status(404).json({ success: false, message: "Property not found" });
+
+    if (!updatedProperty) {
+      return res.status(404).json({ success: false, message: "Property not found" });
+    }
 
     res.json({ success: true, property: updatedProperty });
   } catch (err) {

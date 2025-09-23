@@ -72,11 +72,7 @@ const PropertyDetailPage = () => {
         <CardHeader className="p-0">
        <img
   crossOrigin="anonymous"
-  src={`${
-    import.meta.env.MODE === 'production'
-      ? 'https://realstate-fullstack-project.onrender.com'
-      : 'http://localhost:4800'
-  }/uploads/${property.image}`}
+  src={property.image}
   alt={property.title}
   className="w-full h-96 object-cover rounded-t-xl"
 />

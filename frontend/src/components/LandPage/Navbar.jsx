@@ -101,7 +101,7 @@ export const HeroHeader = () => {
                  
 
                   
-                  <div>
+                  <div className='hidden lg:block'>
                   <MainHeader/>
                   </div>
                 </div>

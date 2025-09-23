@@ -133,7 +133,7 @@ const PropertiesDetals = () => {
                   <CardHeader className="p-0 relative">
                     <img
                       crossOrigin="anonymous"
-                      src={`http://localhost:4800/uploads/${property.image}`}
+                      src={property.image}
                       alt="Property"
                       className="w-full h-60 object-cover"
                     />
