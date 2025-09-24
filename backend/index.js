@@ -17,7 +17,7 @@ const Port = process.env.PORT || 4300;
 const app = express();
 
 // Security headers
-app.use(hamlet({ contentSecurityPolicy: false, })) 
+app.use(helmet({ contentSecurityPolicy: false }));
 
 // Parse JSON bodies
 app.use(express.json());
