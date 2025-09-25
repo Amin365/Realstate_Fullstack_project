@@ -41,7 +41,27 @@ export const HeroHeader = () => {
         >
           <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0 lg:py-4">
             {/* Logo + Mobile Menu Button */}
-            <div className="flex w-full justify-between lg:w-auto">
+
+            {
+              token?(
+                 <div className="flex items-center gap-3">
+                  {/* Username */}
+                 
+
+                  
+                  <div className=''>
+                  <MainHeader/>
+                  </div>
+                    <Button
+                    size="sm"
+                    className={cn(isScrolled ? 'lg:inline-flex' : 'hidden')}
+                    asChild
+                  >
+                    <Link to="/register">Get Started</Link>
+                  </Button>
+                </div>
+              ):
+               <div className="flex w-full justify-between lg:w-auto">
               <div className="space-x-3 flex items-center">
                 <Link to="/" aria-label="home" className="flex items-center text-gray-500 space-x-2">
                   <HomeIcon />
@@ -59,6 +79,10 @@ export const HeroHeader = () => {
               </button>
             </div>
 
+            }
+
+
+           
             {/* Desktop Menu */}
             <div className="absolute inset-0 m-auto hidden size-fit lg:block">
               <ul className="flex gap-8 text-sm">
@@ -101,9 +125,16 @@ export const HeroHeader = () => {
                  
 
                   
-                  <div className='hidden lg:block'>
+                  <div className=''>
                   <MainHeader/>
                   </div>
+                    <Button
+                    size="sm"
+                    className={cn(isScrolled ? 'lg:inline-flex' : 'hidden')}
+                    asChild
+                  >
+                    <Link to="/register">Get Started</Link>
+                  </Button>
                 </div>
               ) : (
                 <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
@@ -127,13 +158,7 @@ export const HeroHeader = () => {
                   </Button>
 
                   {/* Get Started Button */}
-                  <Button
-                    size="sm"
-                    className={cn(isScrolled ? 'lg:inline-flex' : 'hidden')}
-                    asChild
-                  >
-                    <Link to="/register">Get Started</Link>
-                  </Button>
+                
                 </div>
               )}
             </div>
