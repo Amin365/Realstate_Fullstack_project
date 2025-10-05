@@ -40,18 +40,30 @@ export const HeroHeader = () => {
           )}
         >
           <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0 lg:py-4">
-            
-            {/* Logo + Mobile Menu Button */}
-            <div className="space-x-3 flex items-center">
-              <Link to="/" aria-label="home" className="flex items-center text-gray-500 space-x-2">
-                <HomeIcon />
-              </Link>
-              <h1>Waansan RealState</h1>
-            </div>
-           
-              <div className='lg:hidden '>
-                { token&&<MainHeader/>}
-              </div>
+        {/* Logo + Mobile Menu Button */}
+<div className="flex justify-between items-center w-full">
+
+  {/* Logo Section */}
+  <div className="flex items-center gap-x-2 whitespace-nowrap">
+    <Link
+      to="/"
+      aria-label="home"
+      className="flex items-center text-gray-500"
+    >
+      <HomeIcon className="w-5 h-5" />
+    </Link>
+    <h1 className="text-sm sm:text-base font-semibold text-gray-800">
+      Waansan RealState
+    </h1>
+  </div>
+
+  {/* Mobile MainHeader (only visible when token exists) */}
+  <div className="lg:hidden flex justify-end">
+    {token && <MainHeader />}
+  </div>
+
+</div>
+
              
             
 
