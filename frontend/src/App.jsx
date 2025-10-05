@@ -10,6 +10,7 @@ import PropertyDetailPage from "./components/properties/PropertyDetailPage";
 import PropertyCard from "./components/LandPage/PropertiesCrad";
 import ProtectedAdmin from "./pages/Protectedadmin";
 import ProfilePage from "./pages/profilePage";
+import Tenants from "./pages/Tenants";
 
 
 
@@ -27,6 +28,7 @@ export default function App() {
        <Route path='/profile' element={<ProfilePage />} />
 
        <Route path="/propertydetails/:id" element={<ProtectedRoute> <PropertyCard /> </ProtectedRoute>} />
+       
 
       {/* Dashboard Layout */}
       <Route
@@ -38,6 +40,7 @@ export default function App() {
         }
       >
         <Route path="properties" element={<Properties />} />
+        <Route path="tenants" element={<Tenants/>}/>
       </Route>
     </Routes>
   );

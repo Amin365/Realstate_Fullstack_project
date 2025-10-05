@@ -20,11 +20,8 @@ const PropertyTable = ({ onEdit }) => {
       return res.data;
     },
   });
-
-
   if (isLoading) return <p className="text-center mt-4">Loading properties...</p>;
   if (isError) return <p className="text-center mt-4 text-red-500">Error: {error.message}</p>;
-
   return (
     <div className="max-w-7xl mx-auto p-4 overflow-x-auto">
       <Table className="w-full mt-6 shadow-md rounded-lg border">

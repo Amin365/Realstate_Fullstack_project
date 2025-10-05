@@ -11,6 +11,7 @@ import { NotFound } from './middleware/NotFound.js';
 import Authrouter from './routes/userAuth.js';
 import PropertyRouter from './routes/PropertRoutes.js';
 
+
 dotenv.config();
 
 const Port = process.env.PORT || 4300;
@@ -35,6 +36,8 @@ app.use("/uploads", express.static(path.join(process.cwd(), "backend", "uploads"
 // Routes
 app.use('/api', Authrouter);
 app.use('/api', PropertyRouter);
+
+
 
 
 

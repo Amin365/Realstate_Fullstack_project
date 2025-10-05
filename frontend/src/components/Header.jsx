@@ -19,28 +19,32 @@ import { useQuery } from "@tanstack/react-query";
 
 const MainHeader = () => {
   const { token, user } = useSelector((state) => state.auth);
-const navigate=useNavigate()
-  const dispatch=useDispatch()
-  const handlelogout=()=>{
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const handlelogout = () => {
     dispatch(setClear())
     navigate('/login')
   }
 
-const { data } = useQuery({
-  queryKey: ["userProfile"],
-  queryFn: async () => {
-    const res = await api.get("/auth/profile");
-    return res.data;
-  },
-  enabled: !!token, // Only run this query if token exists
-  staleTime: 5 * 60 * 1000, // 5 minutes
-  cacheTime: 30 * 60 * 1000, // 30 minutes
-});
+  const { data } = useQuery({
+    queryKey: ["userProfile"],
+    queryFn: async () => {
+      const res = await api.get("/auth/profile");
+      return res.data;
+
+    },
+
+
+    enabled: !!token, // Only run this query if token exists
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    cacheTime: 30 * 60 * 1000, // 30 minutes
+  });
+
   return (
     <header className="px-4">
       <div className="max-w-7xl mx-auto px-8 md:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
-         
+
 
           {/* Right Section */}
           <div className="flex items-center space-x-12">
@@ -70,33 +74,49 @@ const { data } = useQuery({
                   {/* Menu Links - Added padding for spacing */}
                   <div className="flex flex-col space-y-2">
                     <DropdownMenuItem asChild>
-                      <Link
-                        to="/dashboard"
-                        className="flex items-center gap-3 py-2"
-                      >
-                        <RxDashboard className="text-green-600" />
-                        Dashboard
-                      </Link>
+                      {user?.role === "admin" && (
+                        <DropdownMenuItem asChild>
+                          <Link to="/dashboard" className="flex items-center gap-3 py-2">
+                            <RxDashboard className="text-green-600" />
+                            Dashboard
+                          </Link>
+                        </DropdownMenuItem>
+                      )}
+
                     </DropdownMenuItem>
 
                     <DropdownMenuItem asChild>
-                      <Link
+                     {
+                      user?.role==="admin"?(
+                         <Link
                         to="/dashboard/properties"
                         className="flex items-center gap-3 py-2"
                       >
                         <Building2 className="text-blue-600" />
                         My Properties
                       </Link>
+                      ): <Link
+                        to="/dashboard/properties"
+                        className="flex items-center gap-3 py-2"
+                      >
+                        <Building2 className="text-blue-600" />
+                        My Favorite  Properties
+                      </Link>
+                     }
                     </DropdownMenuItem>
 
                     <DropdownMenuItem asChild>
-                      <Link
+                      {
+                        user?.role==="admin"&&(
+                          <Link
                         to="/dashboard/clients"
                         className="flex items-center gap-3 py-2"
                       >
                         <Users className="text-rose-600" />
                         Manage Clients
                       </Link>
+                        )
+                      }
                     </DropdownMenuItem>
 
                     <DropdownMenuItem asChild>

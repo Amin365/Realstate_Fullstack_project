@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import api from "../../lib/api/CleintApi";
 import { Bed, Bath, Ruler } from "lucide-react";
 import {
@@ -23,9 +23,6 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
-
-
-
 const PropertyDetailPage = () => {
   const { id } = useParams();
   const [formData, setFormData] = useState({
@@ -34,6 +31,8 @@ const PropertyDetailPage = () => {
     phone: "",
     message: "",
   });
+
+  const [open, setOpen] = useState(false);
 
   const { data: property, isLoading, isError } = useQuery({
     queryKey: ["property", id],
@@ -51,18 +50,40 @@ const PropertyDetailPage = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+const tenantsMutation= useMutation({
+  mutationFn:async(formData)=>{
+    const result = await api.post('/tenants',formData)
+    return result.data
+  },
+  onSuccess:()=>{
+    toast.success('Request sent successfully!')
+
+    setFormData({
+      fullName: "",
+      email: "",
+      phone: "",
+      message: "",
+    });
+     setOpen(false);
+  },
+  onError:(err)=>{
+    toast.error('Error submitting request')
+  }
+
+  
+})
+
   // handle form submit
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      // example POST request (adjust API path to your backend)
-      const res = await api.post(`/properties/${id}/request`, formData);
-      toast.success("Request sent successfully!");
-     
-    } catch (err) {
-      toast.error(err);
-      toast.error("Error submitting request");
-    }
+  tenantsMutation.mutate({
+  fullName: formData.fullName,
+  email: formData.email,
+  phone: formData.phone,
+  message: formData.message,
+ 
+})
+
   };
 
   return (
@@ -70,13 +91,12 @@ const PropertyDetailPage = () => {
       <Card className="shadow-lg rounded-xl">
         {/* Image */}
         <CardHeader className="p-0">
-       <img
-  crossOrigin="anonymous"
-  src={property.image}
-  alt={property.title}
-  className="w-full h-96 object-cover rounded-t-xl"
-/>
-
+          <img
+            crossOrigin="anonymous"
+            src={property.image}
+            alt={property.title}
+            className="w-full h-96 object-cover rounded-t-xl"
+          />
         </CardHeader>
 
         {/* Property Info */}
@@ -103,7 +123,7 @@ const PropertyDetailPage = () => {
 
         {/* Request Button with Dialog */}
         <CardFooter className="p-6">
-          <Dialog>
+          <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
               <Button className="bg-rose-600 text-white hover:bg-rose-700">
                 Request as Tenant

@@ -19,7 +19,7 @@ export const Createuser = async (req, res, next) => {
         const user = await User.create({ name, email, password,role })
         const token = GenarateToken(user._id);
         res.json({ token ,user});
-    } catch (err) {cd 
+    } catch (err) {
         next(err); 
     }
 };
