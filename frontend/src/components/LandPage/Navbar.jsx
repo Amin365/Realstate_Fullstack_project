@@ -41,10 +41,10 @@ export const HeroHeader = () => {
         >
           <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0 lg:py-4">
         {/* Logo + Mobile Menu Button */}
-<div className="flex justify-between items-center w-full">
+<div className="flex justify-between items-center">
 
   {/* Logo Section */}
-  <div className="flex items-center gap-x-2 whitespace-nowrap">
+  <div className="flex items-center  gap-x-2 whitespace-nowrap">
     <Link
       to="/"
       aria-label="home"
