@@ -33,11 +33,12 @@ const PropertySchema = new mongoose.Schema(
       enum: ["Apartment", "House", "Land", "Office"],
       required: true,
     },
-    status: {
-      type: String,
-      enum: ["For Sale", "For Rent"],
-      default: "For Sale",
-    },
+  status: {
+  type: String,
+  enum: ["available", "rented"],
+  default: "available",
+},
+
     address: {
       type: String,
       required: true,

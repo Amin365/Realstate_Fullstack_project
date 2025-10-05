@@ -37,7 +37,10 @@ const PropertiesDetals = () => {
     : [];
 
   const filteredProperties = properties
-    ? properties.filter((p) => {
+    ? properties
+          .filter((p) => p.status === "available") 
+  
+    .filter((p) => {
         const matchesLocation =
           filters.location === "any"
             ? true

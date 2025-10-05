@@ -42,8 +42,6 @@ const PropertyDetailPage = () => {
     },
   });
 
-  if (isLoading) return <p className="text-center">Loading property details...</p>;
-  if (isError) return <p className="text-center text-red-500">Error loading property.</p>;
 
   // handle input changes
   const handleChange = (e) => {
@@ -81,6 +79,7 @@ const tenantsMutation= useMutation({
   email: formData.email,
   phone: formData.phone,
   message: formData.message,
+  propertyId: property._id
  
 })
 
@@ -88,35 +87,43 @@ const tenantsMutation= useMutation({
 
   return (
     <div className="max-w-4xl mx-auto p-6">
+
+       {isLoading && (
+        <p className="text-center">Loading property details...</p>
+      )}
+      {isError && (
+        <p className="text-center text-red-500">Error loading property.</p>
+      )}
+
       <Card className="shadow-lg rounded-xl">
         {/* Image */}
         <CardHeader className="p-0">
           <img
             crossOrigin="anonymous"
-            src={property.image}
-            alt={property.title}
+            src={property?.image}
+            alt={property?.title}
             className="w-full h-96 object-cover rounded-t-xl"
           />
         </CardHeader>
 
         {/* Property Info */}
         <CardContent className="p-6">
-          <CardTitle className="text-3xl font-bold">{property.title}</CardTitle>
-          <p className="text-gray-600 mt-2">{property.address}</p>
+          <CardTitle className="text-3xl font-bold">{property?.title}</CardTitle>
+          <p className="text-gray-600 mt-2">{property?.address}</p>
           <h2 className="text-2xl text-rose-600 mt-4">
-            {property.currency} {property.amount} / {property.period}
+            {property?.currency} {property?.amount} / {property?.period}
           </h2>
 
           <div className="flex gap-6 mt-4 text-gray-700">
             <div className="flex items-center gap-2">
-              <Bed className="h-5 w-5" /> {property.bedrooms} Beds
+              <Bed className="h-5 w-5" /> {property?.bedrooms} Beds
             </div>
             <div className="flex items-center gap-2">
-              <Bath className="h-5 w-5" /> {property.bathrooms} Baths
+              <Bath className="h-5 w-5" /> {property?.bathrooms} Baths
             </div>
             <div className="flex items-center gap-2">
-              <Ruler className="h-5 w-5" /> {property.length}×{property.width}{" "}
-              {property.unit}
+              <Ruler className="h-5 w-5" /> {property?.length}×{property?.width}{" "}
+              {property?.unit}
             </div>
           </div>
         </CardContent>

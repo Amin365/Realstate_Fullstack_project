@@ -24,7 +24,7 @@ const PropertyForm = ({ open, onOpenChange, property }) => {
     period: "month", // ✅ match schema
     currency: "BIRR",
     propertyType: "Apartment",
-    status: "For Sale",
+    status: "available",
     address: "",
     city: "",
     state: "",
@@ -51,7 +51,7 @@ const PropertyForm = ({ open, onOpenChange, property }) => {
         period: property.period || "month",
         currency: property.currency || "BIRR",
         propertyType: property.propertyType || "Apartment",
-        status: property.status || "For Sale",
+        status: property.status || "available",
         address: property.address || "",
         city: property.city || "",
         state: property.state || "",
@@ -197,8 +197,8 @@ const PropertyForm = ({ open, onOpenChange, property }) => {
               >
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="For Sale">For Sale</SelectItem>
-                  <SelectItem value="For Rent">For Rent</SelectItem>
+                  <SelectItem value="available">available</SelectItem>
+                  <SelectItem value="rented">rented</SelectItem>
                   
                 </SelectContent>
               </Select>

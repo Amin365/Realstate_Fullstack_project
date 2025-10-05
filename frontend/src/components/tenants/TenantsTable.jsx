@@ -22,31 +22,32 @@ const TenantTable = () => {
   const queryClient = useQueryClient();
 
   // Fetch tenants
-  const { data: tenants, isLoading, isError, error } = useQuery({
-    queryKey: ["tenants"],
-    queryFn: async () => {
-      const res = await api.get("/tenants");
-      return res.data.data; // ✅ only the array
-    },
-  });
+const { data: tenants, isLoading, isError, error } = useQuery({
+  queryKey: ["tenants"],
+  queryFn: async () => {
+    const res = await api.get("/tenants");
+    return res.data.alltenant; // ✅ correct property name
+  },
+});
+
 
   console.log('tenants', tenants )
 
   // Delete tenant mutation
-  const deleteTenant = useMutation({
-    mutationFn: async (id) => {
-      await api.delete(`/tenants/${id}`);
-    },
-    onSuccess: () => {
-      toast.success("Tenant deleted successfully");
-      queryClient.invalidateQueries(["tenants"]); 
-    },
-    onError: () => toast.error("Failed to delete tenant"),
-  });
+  // const deleteTenant = useMutation({
+  //   mutationFn: async (id) => {
+  //     await api.delete(`/tenants/${id}`);
+  //   },
+  //   onSuccess: () => {
+  //     toast.success("Tenant deleted successfully");
+  //     queryClient.invalidateQueries(["tenants"]); 
+  //   },
+  //   onError: () => toast.error("Failed to delete tenant"),
+  // });
 
-  if (isLoading) return <p className="text-center mt-4">Loading Tenants...</p>;
-  if (isError)
-    return <p className="text-center mt-4 text-red-500">Error: {error.message}</p>;
+  // if (isLoading) return <p className="text-center mt-4">Loading Tenants...</p>;
+  // if (isError)
+  //   return <p className="text-center mt-4 text-red-500">Error: {error.message}</p>;
 
   return (
     <div className="max-w-7xl mx-auto p-4 overflow-x-auto">
@@ -65,14 +66,14 @@ const TenantTable = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {tenants.length === 0 ? (
+          {tenants?.length === 0 ? (
             <TableRow>
               <TableCell colSpan={6} className="text-center py-4">
                 No Tenants found.
               </TableCell>
             </TableRow>
           ) : (
-            tenants.map((t) => (
+            tenants?.map((t) => (
               <TableRow key={t._id}>
                 <TableCell>{t.fullName}</TableCell>
                 <TableCell>
@@ -86,9 +87,9 @@ const TenantTable = () => {
                     {t.status || "pending"}
                   </span>
                 </TableCell>
-                <TableCell>{t.phone}</TableCell>
-                <TableCell>{t.email}</TableCell>
-                <TableCell className="text-right">{t.message}</TableCell>
+                <TableCell>{t?.phone}</TableCell>
+                <TableCell>{t?.email}</TableCell>
+                <TableCell className="text-right">{t?.message}</TableCell>
                 <TableCell className="text-right space-x-2">
                   <TooltipProvider>
                     <Tooltip>
