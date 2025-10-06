@@ -11,6 +11,7 @@ import PropertyCard from "./components/LandPage/PropertiesCrad";
 import ProtectedAdmin from "./pages/Protectedadmin";
 import ProfilePage from "./pages/profilePage";
 import Tenants from "./pages/Tenants";
+import Favorites from "./pages/Favorites";
 
 
 
@@ -26,6 +27,7 @@ export default function App() {
       <Route path='/propertydetails' element={<PropertiesDetals/>}/>
        <Route path="/propertydetails/:id" element={ <ProtectedRoute>  <PropertyDetailPage /> </ProtectedRoute>} />
        <Route path='/profile' element={<ProfilePage />} />
+       <Route path="/favorites" element={<Favorites/>} />
 
        <Route path="/propertydetails/:id" element={<ProtectedRoute> <PropertyCard /> </ProtectedRoute>} />
        

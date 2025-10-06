@@ -96,7 +96,7 @@ const MainHeader = () => {
                         My Properties
                       </Link>
                       ): <Link
-                        to="/dashboard/properties"
+                        to="/favorites"
                         className="flex items-center gap-3 py-2"
                       >
                         <Building2 className="text-blue-600" />

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import api from "../../lib/api/CleintApi";
 import { Bed, Bath, Ruler } from "lucide-react";
 import {
@@ -25,6 +25,8 @@ import { toast } from "sonner";
 
 const PropertyDetailPage = () => {
   const { id } = useParams();
+  const queryClient = useQueryClient();
+
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -34,6 +36,7 @@ const PropertyDetailPage = () => {
 
   const [open, setOpen] = useState(false);
 
+  // ✅ Fetch Property
   const { data: property, isLoading, isError } = useQuery({
     queryKey: ["property", id],
     queryFn: async () => {
@@ -42,61 +45,55 @@ const PropertyDetailPage = () => {
     },
   });
 
-
-  // handle input changes
+  // ✅ Handle Input Changes
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-const tenantsMutation= useMutation({
-  mutationFn:async(formData)=>{
-    const result = await api.post('/tenants',formData)
-    return result.data
-  },
-  onSuccess:()=>{
-    toast.success('Request sent successfully!')
+  // ✅ Tenant Mutation (Creates Tenant + Auto Updates Property)
+  const tenantsMutation = useMutation({
+    mutationFn: async (formData) => {
+      const result = await api.post("/tenants", formData);
+      return result.data;
+    },
+    onSuccess: () => {
+      toast.success("Request sent successfully!");
+      setFormData({
+        fullName: "",
+        email: "",
+        phone: "",
+        message: "",
+      });
+      setOpen(false);
+      queryClient.invalidateQueries(["property", id]); // refresh property status
+    },
+    onError: (err) => {
+      toast.error(err.response?.data?.message || "Error submitting request");
+    },
+  });
 
-    setFormData({
-      fullName: "",
-      email: "",
-      phone: "",
-      message: "",
-    });
-     setOpen(false);
-  },
-  onError:(err)=>{
-    toast.error('Error submitting request')
-  }
-
-  
-})
-
-  // handle form submit
-  const handleSubmit = async (e) => {
+  // ✅ Handle Form Submit
+  const handleSubmit = (e) => {
     e.preventDefault();
-  tenantsMutation.mutate({
-  fullName: formData.fullName,
-  email: formData.email,
-  phone: formData.phone,
-  message: formData.message,
-  propertyId: property._id
- 
-})
 
+    tenantsMutation.mutate({
+      fullName: formData.fullName,
+      email: formData.email,
+      phone: formData.phone,
+      message: formData.message,
+      propertyId: property._id,
+    });
   };
 
   return (
     <div className="max-w-4xl mx-auto p-6">
-
-       {isLoading && (
-        <p className="text-center">Loading property details...</p>
-      )}
+      {isLoading && <p className="text-center">Loading property details...</p>}
       {isError && (
         <p className="text-center text-red-500">Error loading property.</p>
       )}
 
       <Card className="shadow-lg rounded-xl">
-        {/* Image */}
+        {/* 🖼️ Image */}
         <CardHeader className="p-0">
           <img
             crossOrigin="anonymous"
@@ -106,9 +103,23 @@ const tenantsMutation= useMutation({
           />
         </CardHeader>
 
-        {/* Property Info */}
+        {/* 🏠 Property Info */}
         <CardContent className="p-6">
-          <CardTitle className="text-3xl font-bold">{property?.title}</CardTitle>
+          <div className="flex justify-between items-center">
+            <CardTitle className="text-3xl font-bold">
+              {property?.title}
+            </CardTitle>
+            <span
+              className={`px-3 py-1 text-sm font-semibold rounded-full ${
+                property?.status === "rented"
+                  ? "bg-red-100 text-red-700"
+                  : "bg-green-100 text-green-700"
+              }`}
+            >
+              {property?.status?.toUpperCase()}
+            </span>
+          </div>
+
           <p className="text-gray-600 mt-2">{property?.address}</p>
           <h2 className="text-2xl text-rose-600 mt-4">
             {property?.currency} {property?.amount} / {property?.period}
@@ -128,15 +139,21 @@ const tenantsMutation= useMutation({
           </div>
         </CardContent>
 
-        {/* Request Button with Dialog */}
+        {/* 🧾 Request Button */}
         <CardFooter className="p-6">
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-              <Button className="bg-rose-600 text-white hover:bg-rose-700">
-                Request as Tenant
+              <Button
+                className="bg-rose-600 text-white hover:bg-rose-700"
+                disabled={property?.status === "rented"} // disable if already rented
+              >
+                {property?.status === "rented"
+                  ? "Already Rented"
+                  : "Request as Tenant"}
               </Button>
             </DialogTrigger>
 
+            {/* 💬 Dialog Form */}
             <DialogContent className="sm:max-w-lg">
               <DialogHeader>
                 <DialogTitle>Tenant Request Form</DialogTitle>
@@ -196,11 +213,15 @@ const tenantsMutation= useMutation({
                   />
                 </div>
 
+                {/* Submit */}
                 <Button
                   type="submit"
+                  disabled={tenantsMutation.isPending}
                   className="w-full bg-rose-600 hover:bg-rose-700 text-white"
                 >
-                  Submit Request
+                  {tenantsMutation.isPending
+                    ? "Submitting..."
+                    : "Submit Request"}
                 </Button>
               </form>
             </DialogContent>

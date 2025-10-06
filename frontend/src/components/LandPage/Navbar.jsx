@@ -6,12 +6,7 @@ import { Link } from 'react-router-dom'
 import { useSelector } from "react-redux"
 import MainHeader from '../Header'
 
-const menuItems = [
-  { name: 'Features', href: '#features' },
-  { name: 'Solution', href: '#solution' },
-  { name: 'Pricing', href: '#pricing' },
-  { name: 'About', href: '#about' },
-]
+
 
 export const HeroHeader = () => {
   const [menuState, setMenuState] = useState(false)
@@ -82,16 +77,10 @@ export const HeroHeader = () => {
             {/* Desktop Menu */}
             <div className="absolute inset-0 m-auto hidden size-fit lg:block">
               <ul className="flex gap-8 text-sm">
-                {menuItems.map((item, index) => (
-                  <li key={index}>
-                    <Link
-                      to={item.href}
-                      className="text-muted-foreground hover:text-accent-foreground block duration-150"
-                    >
-                      {item.name}
-                    </Link>
-                  </li>
-                ))}
+               <Link to="/favorites" className="text-rose-500 font-semibold">
+  Favorites ❤️
+ </Link>
+
               </ul>
             </div>
 
@@ -101,16 +90,10 @@ export const HeroHeader = () => {
               {/* Mobile Menu Links */}
               <div className="lg:hidden">
                 <ul className="space-y-6 text-base">
-                  {menuItems.map((item, index) => (
-                    <li key={index}>
-                      <Link
-                        to={item.href}
-                        className="text-muted-foreground hover:text-accent-foreground block duration-150"
-                      >
-                        {item.name}
-                      </Link>
-                    </li>
-                  ))}
+                  <Link to="/favorites" className="text-rose-500 font-semibold">
+  Favorites ❤️
+</Link>
+
                 </ul>
               </div>
 

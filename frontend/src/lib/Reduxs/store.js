@@ -1,30 +1,37 @@
 import { configureStore } from "@reduxjs/toolkit";
-import {persistReducer, persistStore} from 'redux-persist'
-import storage from 'redux-persist/lib/storage'
-import AuthReducer from './authSlice.js'
+import { persistReducer, persistStore } from "redux-persist";
+import storage from "redux-persist/lib/storage";
 
-const PersistConfig={
-    key:'auth',
-    storage
-}
+import AuthReducer from "./authSlice.js";
+import FavoritesReducer from "./favoritesSlice.js"; 
 
+// Auth Persist Config
+const authPersistConfig = {
+  key: "auth",
+  storage,
+};
 
-const persistauthReducer= persistReducer(PersistConfig,AuthReducer)
+// Favorites Persist Config
+const favoritesPersistConfig = {
+  key: "favorites",
+  storage,
+};
 
-// store
+// Wrap reducers
+const persistedAuthReducer = persistReducer(authPersistConfig, AuthReducer);
+const persistedFavoritesReducer = persistReducer(favoritesPersistConfig, FavoritesReducer);
 
-
+// Store
 const store = configureStore({
-    reducer:{
-        auth:persistauthReducer
-    },
-    middleware:(GetdeafultMidleware)=>
-        GetdeafultMidleware({
-            serializableCheck:false
-        })
-})
+  reducer: {
+    auth: persistedAuthReducer,
+    favorites: persistedFavoritesReducer, 
+  },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
+});
 
-export const persister= persistStore(store)
-
-export default store
-
+export const persister = persistStore(store);
+export default store;

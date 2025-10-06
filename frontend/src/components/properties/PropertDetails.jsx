@@ -17,8 +17,19 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { HeroHeader } from "../LandPage/Navbar";
+import { useDispatch, useSelector } from "react-redux";
+import { toggleFavorite } from "../../lib/Reduxs/favoritesSlice";
+
 
 const PropertiesDetals = () => {
+
+
+  const dispatch = useDispatch();
+  const favorites = useSelector((state) => state.favorites?.items || []);
+  console.log("favorites",favorites)
+
+  const isFavorite = (id) => favorites.some((item) => item._id === id);
+
   const [filters, setFilters] = useState({
     location: "any",
     propertyType: "any",
@@ -38,9 +49,9 @@ const PropertiesDetals = () => {
 
   const filteredProperties = properties
     ? properties
-          .filter((p) => p.status === "available") 
-  
-    .filter((p) => {
+      .filter((p) => p.status === "available")
+
+      .filter((p) => {
         const matchesLocation =
           filters.location === "any"
             ? true
@@ -140,9 +151,20 @@ const PropertiesDetals = () => {
                       alt="Property"
                       className="w-full h-60 object-cover"
                     />
-                    <button className="absolute top-3 right-3 bg-white/70 backdrop-blur-sm p-2 rounded-full hover:bg-white shadow">
-                      <Heart className="h-5 w-5 text-rose-500" />
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        dispatch(toggleFavorite(property)); // send full object now
+                      }}
+                      className={`absolute top-3 right-3 p-2 rounded-full shadow transition ${isFavorite(property._id)
+                          ? "bg-rose-500 text-white"
+                          : "bg-white/70 text-rose-500"
+                        }`}
+                    >
+                      <Heart className="h-5 w-5" />
                     </button>
+
+
                   </CardHeader>
 
                   <CardContent className="p-3">
