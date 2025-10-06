@@ -26,7 +26,7 @@ const PropertiesDetals = () => {
 
   const dispatch = useDispatch();
   const favorites = useSelector((state) => state.favorites?.items || []);
-  console.log("favorites",favorites)
+ 
 
   const isFavorite = (id) => favorites.some((item) => item._id === id);
 
@@ -154,7 +154,7 @@ const PropertiesDetals = () => {
                     <button
                       onClick={(e) => {
                         e.preventDefault();
-                        dispatch(toggleFavorite(property)); // send full object now
+                        dispatch(toggleFavorite(property)); 
                       }}
                       className={`absolute top-3 right-3 p-2 rounded-full shadow transition ${isFavorite(property._id)
                           ? "bg-rose-500 text-white"

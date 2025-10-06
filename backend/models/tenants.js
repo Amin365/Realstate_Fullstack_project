@@ -26,10 +26,14 @@ const tenantSchema = new mongoose.Schema(
 
     status: {
       type: String,
-      enum: ["pending", "rented"],
+      enum: ["pending", "rented","available"],
       default: "pending",
     },
-
+    tenantsPayments:{
+  type:String,
+  enum:["pending","paid"],
+  default:"pending"
+},
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

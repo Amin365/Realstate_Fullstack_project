@@ -87,7 +87,8 @@ export const updateProperty = async (req, res, next) => {
       areaLength: req.body.areaLength,
       areaWidth: req.body.areaWidth,
       areaUnit: req.body.areaUnit,
-    };
+      paymentStatus:req.body.paymentStatus
+    }
 
     // Update with Cloudinary URL if new image uploaded
     if (req.file) {
@@ -105,3 +106,19 @@ export const updateProperty = async (req, res, next) => {
     next(err);
   }
 };
+
+ export const DeleteProperty = async(req,res,next)=>{
+    try {
+        const deleted= await property.findByIdAndDelete({
+         _id: req.params.id,
+      createdBy: req.user._id,
+
+        })
+        if(!deleted) return res.status(404).json({mesage:"Property Not Found"})
+             res.status(200).json({ success: true, message: "Deleted successfully" });
+        
+    } catch (error) {
+        next(error)
+    }
+}
+

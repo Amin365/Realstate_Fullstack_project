@@ -93,7 +93,7 @@ const PropertyDetailPage = () => {
       )}
 
       <Card className="shadow-lg rounded-xl">
-        {/* 🖼️ Image */}
+        {/*  Image */}
         <CardHeader className="p-0">
           <img
             crossOrigin="anonymous"
@@ -103,7 +103,7 @@ const PropertyDetailPage = () => {
           />
         </CardHeader>
 
-        {/* 🏠 Property Info */}
+        {/*  Property Info */}
         <CardContent className="p-6">
           <div className="flex justify-between items-center">
             <CardTitle className="text-3xl font-bold">

@@ -37,9 +37,9 @@ export function SectionCards() {
     : 0;
 
   // Active Rentals (status === "Rented")
-  const activeRentals = properties.filter((p) => p.status === "For Rent").length;
+  const activeRentals = properties.filter((p) => p.status === "available").length;
   const activeRentalsPrevious = properties.filter(
-    (p) => p.status === "Rented" && new Date(p.createdAt).getMonth() === previousMonth
+    (p) => p.status === "rented" && new Date(p.createdAt).getMonth() === previousMonth
   ).length;
   const activeRentalsGrowth = activeRentalsPrevious > 0
     ? (((activeRentals - activeRentalsPrevious) / activeRentalsPrevious) * 100).toFixed(1)

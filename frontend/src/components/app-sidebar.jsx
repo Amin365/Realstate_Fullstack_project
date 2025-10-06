@@ -44,7 +44,7 @@ const data = {
    { title: "Properties", url: "/dashboard/properties", icon: IconListDetails },
 
     { title: "Tenants", url: "/dashboard/tenants", icon: IconChartBar },
-    { title: "Payment", url: "/dashboard/payment", icon: IconFolder },
+    { title: "Payment", url: "/dashboard/payments", icon: IconFolder },
     { title: "Reports", url: "/dashboard/reports", icon: IconReport },
   ],
   navSecondary: [

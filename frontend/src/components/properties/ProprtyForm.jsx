@@ -52,6 +52,7 @@ const PropertyForm = ({ open, onOpenChange, property }) => {
         currency: property.currency || "BIRR",
         propertyType: property.propertyType || "Apartment",
         status: property.status || "available",
+        paymentStatus:property.paymentStatus|| "pending",
         address: property.address || "",
         city: property.city || "",
         state: property.state || "",

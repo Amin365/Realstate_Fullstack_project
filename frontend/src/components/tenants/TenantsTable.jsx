@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { PencilLine, Trash2 } from "lucide-react";
+import { PencilLine, Trash2, Eye } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -21,7 +21,6 @@ import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogFooter,
@@ -33,7 +32,7 @@ import { Button } from "@/components/ui/button";
 const TenantTable = () => {
   const queryClient = useQueryClient();
 
-  // ✅ Fetch tenants
+  // Fetch tenants with property details
   const { data: tenants, isLoading, isError, error } = useQuery({
     queryKey: ["tenants"],
     queryFn: async () => {
@@ -42,7 +41,7 @@ const TenantTable = () => {
     },
   });
 
-  //  State for editing
+  // State for editing tenants
   const [openEdit, setOpenEdit] = useState(false);
   const [editData, setEditData] = useState({
     _id: "",
@@ -51,13 +50,18 @@ const TenantTable = () => {
     phone: "",
     message: "",
     status: "",
+    paymentStatus:""
   });
 
-  //  State for delete confirmation
+  // State for delete
   const [openDelete, setOpenDelete] = useState(false);
   const [selectedTenant, setSelectedTenant] = useState(null);
 
-  //  Edit mutation
+  // State for property view dialog
+  const [openPropertyView, setOpenPropertyView] = useState(false);
+  const [propertyData, setPropertyData] = useState(null);
+
+  // Mutations
   const updateTenant = useMutation({
     mutationFn: async (tenant) => {
       const res = await api.put(`/tenants/${tenant._id}`, tenant);
@@ -71,7 +75,6 @@ const TenantTable = () => {
     onError: () => toast.error("Failed to update tenant"),
   });
 
-  // ✅ Delete mutation
   const deleteTenant = useMutation({
     mutationFn: async (id) => {
       await api.delete(`/tenants/${id}`);
@@ -84,15 +87,10 @@ const TenantTable = () => {
     onError: () => toast.error("Failed to delete tenant"),
   });
 
-  // ✅ Handlers
+  // Handlers
   const handleEditClick = (tenant) => {
     setEditData(tenant);
     setOpenEdit(true);
-  };
-
-  const handleEditSubmit = (e) => {
-    e.preventDefault();
-    updateTenant.mutate(editData);
   };
 
   const handleDeleteClick = (tenant) => {
@@ -100,7 +98,16 @@ const TenantTable = () => {
     setOpenDelete(true);
   };
 
-  // UI Rendering
+  const handlePropertyView = (property) => {
+    setPropertyData(property);
+    setOpenPropertyView(true);
+  };
+
+  const handleEditSubmit = (e) => {
+    e.preventDefault();
+    updateTenant.mutate(editData);
+  };
+
   if (isLoading) return <p className="text-center mt-4">Loading Tenants...</p>;
   if (isError)
     return (
@@ -119,6 +126,9 @@ const TenantTable = () => {
             <TableHead>Status</TableHead>
             <TableHead>Phone</TableHead>
             <TableHead>Email</TableHead>
+            <TableHead>Property Details</TableHead>
+            <TableHead>Payment Status</TableHead>
+           
             <TableHead className="text-right">Message</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
@@ -126,7 +136,7 @@ const TenantTable = () => {
         <TableBody>
           {tenants?.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={6} className="text-center py-4">
+              <TableCell colSpan={8} className="text-center py-4">
                 No Tenants found.
               </TableCell>
             </TableRow>
@@ -147,6 +157,27 @@ const TenantTable = () => {
                 </TableCell>
                 <TableCell>{t.phone}</TableCell>
                 <TableCell>{t.email}</TableCell>
+                <TableCell>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => handlePropertyView(t.propertyId)}
+                  >
+                    {t.propertyId?.title || "N/A"} <Eye size={16} className="ml-1" />
+                  </Button>
+                </TableCell>
+                 <TableCell>
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                      t.tenantsPayments === "paid"
+                        ? "bg-red-100 text-red-700"
+                        : "bg-green-100 text-green-700"
+                    }`}
+                  >
+                    {t.tenantsPayments || "pending"}
+                  </span>
+                </TableCell>
+               
                 <TableCell className="text-right">{t.message}</TableCell>
                 <TableCell className="text-right space-x-2">
                   <TooltipProvider>
@@ -183,12 +214,11 @@ const TenantTable = () => {
         </TableBody>
       </Table>
 
-      {/* ✅ Edit Dialog */}
+      {/* Edit Dialog */}
       <Dialog open={openEdit} onOpenChange={setOpenEdit}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>Edit Tenant</DialogTitle>
-            <DialogDescription>Update tenant details below.</DialogDescription>
           </DialogHeader>
 
           <form onSubmit={handleEditSubmit} className="space-y-4">
@@ -247,6 +277,20 @@ const TenantTable = () => {
                 <option value="pending">Pending</option>
               </select>
             </div>
+            <div className="space-y-2">
+              <Label>paymentStatus</Label>
+              <select
+                className="border rounded-md w-full p-2"
+                value={editData.tenantsPayments}
+                onChange={(e) =>
+                  setEditData({ ...editData, tenantsPayments: e.target.value })
+                }
+              >
+                
+                <option value="paid">paid</option>
+                <option value="pending">Pending</option>
+              </select>
+            </div>
 
             <Button
               type="submit"
@@ -258,16 +302,15 @@ const TenantTable = () => {
         </DialogContent>
       </Dialog>
 
-      {/* ✅ Delete Confirmation Dialog */}
+      {/* Delete Dialog */}
       <Dialog open={openDelete} onOpenChange={setOpenDelete}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Confirm Delete</DialogTitle>
-            <DialogDescription>
+            <p>
               Are you sure you want to delete{" "}
               <span className="font-semibold">{selectedTenant?.fullName}</span>?
-              This action cannot be undone.
-            </DialogDescription>
+            </p>
           </DialogHeader>
 
           <DialogFooter className="flex justify-end gap-2">
@@ -283,6 +326,38 @@ const TenantTable = () => {
               className="bg-red-600 hover:bg-red-700 text-white"
             >
               Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Property View Dialog */}
+      <Dialog open={openPropertyView} onOpenChange={setOpenPropertyView}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Property Details</DialogTitle>
+          </DialogHeader>
+          {propertyData && (
+            <div className="space-y-2">
+              <p><strong>Name:</strong> {propertyData.title}</p>
+              <p><strong>Location:</strong> {propertyData.address}</p>
+              <p><strong>Status:  </strong><span
+                    className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                      propertyData?.status === "rented"
+                        ? "bg-red-100 text-red-700"
+                        : "bg-green-100 text-green-700"
+                    }`}
+                  >
+                    {propertyData?.status || "N/A"}
+                  </span></p>
+               
+              <p><strong>Amount:</strong> {propertyData.currency} {propertyData.amount} / {propertyData.period}</p>
+              <p><strong>Created At:</strong> {new Date(propertyData.createdAt).toLocaleString()}</p>
+            </div>
+          )}
+          <DialogFooter className="flex justify-end">
+            <Button onClick={() => setOpenPropertyView(false)} className="bg-rose-600 hover:bg-rose-700 text-white">
+              Close
             </Button>
           </DialogFooter>
         </DialogContent>

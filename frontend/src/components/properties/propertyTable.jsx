@@ -71,6 +71,7 @@ const PropertyTable = ({ onEdit }) => {
             <TableHead>Status</TableHead>
             <TableHead>Property Type</TableHead>
             <TableHead className="text-right">Price</TableHead>
+            <TableHead className="text-right">Payment Status</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -99,6 +100,17 @@ const PropertyTable = ({ onEdit }) => {
                 <TableCell>{property.propertyType}</TableCell>
                 <TableCell className="text-right">
                   {property.currency} {property.amount} / {property.period}
+                </TableCell>
+                <TableCell className="text-right space-x-2">
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                      property.status === "paid"
+                        ? "bg-rose-100 text-rose-700 px-2"
+                        : "bg-blue-100 text-blue-700"
+                    }`}
+                  >
+                    {property.paymentStatus}
+                  </span>
                 </TableCell>
                 <TableCell className="text-right space-x-2">
                   <TooltipProvider>

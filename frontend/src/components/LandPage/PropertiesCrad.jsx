@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Card,
@@ -17,6 +17,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { HeroHeader } from "../LandPage/Navbar";
+import { useDispatch, useSelector } from "react-redux";
+import React from "react";
+import { toggleFavorite } from "../../lib/Reduxs/favoritesSlice";
 
 const PropertyCard = () => {
   const [filters, setFilters] = useState({
@@ -49,6 +52,13 @@ const PropertyCard = () => {
         return matchesLocation && matchesType;
       })
     : [];
+
+    const dispatch = useDispatch();
+     const favorites = useSelector((state) => state.favorites?.items || []);
+     console.log("favorites",favorites)
+   
+     const isFavorite = (id) => favorites.some((item) => item._id === id);
+    
 
   return (
     <>
@@ -137,8 +147,17 @@ const PropertyCard = () => {
                       alt="Property"
                       className="w-full h-60 object-cover"
                     />
-                    <button className="absolute top-3 right-3 bg-white/70 backdrop-blur-sm p-2 rounded-full hover:bg-white shadow">
-                      <Heart className="h-5 w-5 text-rose-500" />
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        dispatch(toggleFavorite(property));
+                      }}
+                      className={`absolute top-3 right-3 p-2 rounded-full shadow transition ${isFavorite(property._id)
+                        ? "bg-rose-500 text-white"
+                        : "bg-white/70 text-rose-500"
+                        }`}
+                    >
+                      <Heart className="h-5 w-5" />
                     </button>
                   </CardHeader>
 

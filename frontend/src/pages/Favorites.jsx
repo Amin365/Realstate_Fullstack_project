@@ -2,6 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { HeroHeader } from "../components/LandPage/Navbar";
 
 const Favorites = () => {
   const favorites = useSelector((state) => state.favorites.items);
@@ -12,7 +13,12 @@ const Favorites = () => {
   }
 
   return (
+    <>
+ <HeroHeader />
+   
     <div className="max-w-7xl mx-auto px-4 py-10">
+    <div className="mt-20">
+  
       <h1 className="text-2xl font-bold mb-6 text-center">
         Your Favorite Properties ❤️
       </h1>
@@ -20,7 +26,7 @@ const Favorites = () => {
       {favorites.length === 0 ? (
         <p className="text-gray-500 text-center">No favorites yet ❤️</p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-20">
           {favorites.map((property) => (
             <Link key={property._id} to={`/propertydetails/${property._id}`}>
               <Card className="overflow-hidden rounded-2xl shadow hover:shadow-lg transition">
@@ -44,6 +50,8 @@ const Favorites = () => {
         </div>
       )}
     </div>
+    </div>
+     </>
   );
 };
 

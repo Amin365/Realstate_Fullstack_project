@@ -12,6 +12,11 @@ import ProtectedAdmin from "./pages/Protectedadmin";
 import ProfilePage from "./pages/profilePage";
 import Tenants from "./pages/Tenants";
 import Favorites from "./pages/Favorites";
+import { Payment } from "./pages/Dashboard/Payment";
+
+
+
+
 
 
 
@@ -28,6 +33,7 @@ export default function App() {
        <Route path="/propertydetails/:id" element={ <ProtectedRoute>  <PropertyDetailPage /> </ProtectedRoute>} />
        <Route path='/profile' element={<ProfilePage />} />
        <Route path="/favorites" element={<Favorites/>} />
+      
 
        <Route path="/propertydetails/:id" element={<ProtectedRoute> <PropertyCard /> </ProtectedRoute>} />
        
@@ -43,6 +49,8 @@ export default function App() {
       >
         <Route path="properties" element={<Properties />} />
         <Route path="tenants" element={<Tenants/>}/>
+         <Route path = "payments" element={<Payment/>} />
+         
       </Route>
     </Routes>
   );

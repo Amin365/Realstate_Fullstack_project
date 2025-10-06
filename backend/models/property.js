@@ -38,6 +38,11 @@ const PropertySchema = new mongoose.Schema(
   enum: ["available", "rented"],
   default: "available",
 },
+paymentStatus:{
+  type:String,
+  enum:["pending","paid"],
+  default:"pending"
+},
 
     address: {
       type: String,
