@@ -6,7 +6,7 @@ import { HeroHeader } from "../components/LandPage/Navbar";
 
 const Favorites = () => {
   const favorites = useSelector((state) => state.favorites.items);
-  console.log("Favorites page state:", favorites);
+ 
 
   if (!favorites) {
     return <p className="text-gray-500 text-center py-20">Loading favorites...</p>;

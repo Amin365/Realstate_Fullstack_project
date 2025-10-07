@@ -7,7 +7,8 @@ import {
 
 import { Outlet, useLocation } from "react-router-dom"
 import { SectionCards } from "@/components/section-cards"
-import { DashboardOverview } from "../../components/dashboard-overview"
+import DashboardOverview from "../../components/ui/DashboardView"
+
 
 
 export default function Dashboard() {
@@ -34,7 +35,8 @@ export default function Dashboard() {
                 <>
                   <SectionCards />
                   <div className="px-4 lg:px-6">
-                        <DashboardOverview />
+                  <DashboardOverview/>
+                   
 
                    
                   </div>

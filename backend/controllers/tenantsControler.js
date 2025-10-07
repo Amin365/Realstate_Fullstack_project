@@ -38,7 +38,7 @@ export const CreateTenants = async (req, res, next) => {
 export const GetAlltenants = async (req, res, next) => {
   try {
     const alltenant = await Tenants.find({ createdBy: req.user._id })
-      .populate("propertyId", "title address status createdAt period amount currency"); 
+      .populate("propertyId", "title address status createdAt period amount currency paymentStatus"); 
 
     res.status(200).json({ message: "gets all tenants", alltenant });
   } catch (error) {
