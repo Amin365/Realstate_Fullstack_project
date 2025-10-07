@@ -13,6 +13,9 @@ import ProfilePage from "./pages/profilePage";
 import Tenants from "./pages/Tenants";
 import Favorites from "./pages/Favorites";
 import { Payment } from "./pages/Dashboard/Payment";
+import ReportDashboardRealtime from "./pages/Dashboard/ReportDashboardRealtime";
+
+
 
 
 
@@ -50,6 +53,7 @@ export default function App() {
         <Route path="properties" element={<Properties />} />
         <Route path="tenants" element={<Tenants/>}/>
          <Route path = "payments" element={<Payment/>} />
+         <Route path = "reports" element={<ReportDashboardRealtime/>} />
          
       </Route>
     </Routes>

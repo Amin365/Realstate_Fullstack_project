@@ -30,10 +30,11 @@ const PropertyForm = ({ open, onOpenChange, property }) => {
     state: "",
     bedrooms: 0,
     bathrooms: 0,
-    length: 0, // ✅ match schema
-    width: 0,  // ✅ match schema
-    unit: "m²", // ✅ match schema
+    length: 0, 
+    width: 0,  
+    unit: "m²", 
     isFavorite: false,
+     tenantId: "",
   };
 
   const [formValue, setFormValue] = useState(initialFormValue);
@@ -62,6 +63,9 @@ const PropertyForm = ({ open, onOpenChange, property }) => {
         width: property.width || 0,
         unit: property.unit || "m²",
         isFavorite: property.isFavorite || false,
+        
+
+
       });
       setImageFile(null);
       setError("");

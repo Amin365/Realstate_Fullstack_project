@@ -7,7 +7,8 @@ import {
 
 import { Outlet, useLocation } from "react-router-dom"
 import { SectionCards } from "@/components/section-cards"
-import ChartAreaInteractive from "../../components/chart-area-interactive"
+import { DashboardOverview } from "../../components/dashboard-overview"
+
 
 export default function Dashboard() {
   const location = useLocation()
@@ -33,7 +34,9 @@ export default function Dashboard() {
                 <>
                   <SectionCards />
                   <div className="px-4 lg:px-6">
-                    <ChartAreaInteractive />
+                        <DashboardOverview />
+
+                   
                   </div>
                 </>
               )}

@@ -11,6 +11,7 @@ import { NotFound } from './middleware/NotFound.js';
 import Authrouter from './routes/userAuth.js';
 import PropertyRouter from './routes/PropertRoutes.js';
 import TenantsRouter from './routes/Tenants.js';
+import Auditrouter from './routes/auditRoutes.js';
 
 
 dotenv.config();
@@ -38,6 +39,7 @@ app.use("/uploads", express.static(path.join(process.cwd(), "backend", "uploads"
 app.use('/api', Authrouter);
 app.use('/api', PropertyRouter);
 app.use('/api',TenantsRouter)
+app.use('/api',Auditrouter)
 
 
 

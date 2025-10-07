@@ -43,7 +43,8 @@ export const GetmyProperty = async (req, res, next) => {
 // ----------------- GET ALL PROPERTIES (PUBLIC) -----------------
 export const GetAllProperties = async (req, res, next) => {
   try {
-    const properties = await property.find().sort({ createdAt: -1 });
+    const properties = await property.find().sort({ createdAt: -1 })
+    
     res.status(200).json(properties);
   } catch (error) {
     next(error);
@@ -54,7 +55,8 @@ export const GetAllProperties = async (req, res, next) => {
 export const GetPropertyById = async (req, res, next) => {
   try {
     const propertyId = req.params.id;
-    const foundProperty = await property.findById(propertyId);
+    const foundProperty = await property.findById(propertyId)
+    
 
     if (!foundProperty) {
       return res.status(404).json({ success: false, message: "Property not found" });
