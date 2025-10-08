@@ -45,6 +45,16 @@ export const GetAlltenants = async (req, res, next) => {
     next(error);
   }
 };
+export const GetAlltenant = async (req, res, next) => {
+  try {
+    const alltenant = await Tenants.find()
+      .populate("propertyId", "title address status createdAt period amount currency paymentStatus image"); 
+
+    res.status(200).json({ message: "gets all tenants", alltenant });
+  } catch (error) {
+    next(error);
+  }
+};
 
 
 export const DeleteTenant = async (req, res, next) => {

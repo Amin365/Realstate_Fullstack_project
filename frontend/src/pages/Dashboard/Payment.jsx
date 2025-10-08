@@ -78,7 +78,7 @@ export function Payment() {
   const { data: tenants = [], isLoading, isError } = useQuery({
     queryKey: ["tenants"],
     queryFn: async () => {
-      const res = await api.get("/tenants");
+      const res = await api.get("/alltenants");
       return res.data.alltenant;
     },
   });

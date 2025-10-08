@@ -68,7 +68,7 @@ export default function ReportDashboardRealtime() {
   const { data: tenants = [], isLoading: tenantsLoading } = useQuery({
     queryKey: ["tenants"],
     queryFn: async () => {
-      const res = await api.get("/tenants");
+      const res = await api.get("/alltenants");
       return res.data?.alltenant || [];
     },
     refetchInterval: 15000, // realtime-ish: 15s
