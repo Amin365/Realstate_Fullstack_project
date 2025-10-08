@@ -14,6 +14,7 @@ import Tenants from "./pages/Tenants";
 import Favorites from "./pages/Favorites";
 import { Payment } from "./pages/Dashboard/Payment";
 import ReportDashboardRealtime from "./pages/Dashboard/ReportDashboardRealtime";
+import MyTenantRequests from "./components/tenants/MyTenantRequests";
 
 
 
@@ -39,7 +40,7 @@ export default function App() {
       
 
        <Route path="/propertydetails/:id" element={<ProtectedRoute> <PropertyCard /> </ProtectedRoute>} />
-       
+       <Route path="request" element={<MyTenantRequests/>} />
 
       {/* Dashboard Layout */}
       <Route

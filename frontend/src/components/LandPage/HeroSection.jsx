@@ -43,8 +43,8 @@ export default function HeroSection() {
                 ) : (
                   <>
                     <AlertTriangle className="size-5 text-red-600" />
-                    <span className="font-medium text-red-700">
-                      ⚠️ All Properties are Rented — Urgent!
+                    <span className="font-medium text-red-700 text-sm md:text-xl">
+                      ⚠️ All Properties are Rented — Visit an Other Time!
                     </span>
                   </>
                 )}

@@ -34,7 +34,12 @@ export const HeroHeader = () => {
           <div className="relative flex flex-wrap items-center justify-between py-3 lg:gap-0 lg:py-4">
 
             {/* Logo + Mobile MainHeader */}
-            <div className="flex items-center justify-between w-full lg:w-auto">
+            <div
+              className={cn(
+                "flex items-center w-full lg:w-auto",
+                !token ? "justify-between" : "justify-start" // ✅ Adjusts layout when no token
+              )}
+            >
               {/* Logo Section */}
               <div className="flex items-center gap-x-4 whitespace-nowrap">
                 <Link
@@ -55,19 +60,29 @@ export const HeroHeader = () => {
                   <MainHeader />
                 </div>
               )}
-            </div>
 
-            {/* Only show toggle button if no token */}
-            {!token && (
-              <button
-                onClick={() => setMenuState(!menuState)}
-                aria-label={menuState ? "Close Menu" : "Open Menu"}
-                className="relative z-20 -m-2.5 -mr-4 block cursor-pointer p-2.5 lg:hidden"
-              >
-                <Menu className="in-data-[state=active]:rotate-180 in-data-[state=active]:scale-0 in-data-[state=active]:opacity-0 m-auto size-6 duration-200" />
-                <X className="in-data-[state=active]:rotate-0 in-data-[state=active]:scale-100 in-data-[state=active]:opacity-100 absolute inset-0 m-auto size-6 -rotate-180 scale-0 opacity-0 duration-200" />
-              </button>
-            )}
+              {/* ✅ Menu toggle aligned right when no token */}
+              {!token && (
+                <button
+                  onClick={() => setMenuState(!menuState)}
+                  aria-label={menuState ? "Close Menu" : "Open Menu"}
+                  className="relative z-20 block cursor-pointer p-2.5 lg:hidden"
+                >
+                  <Menu
+                    className={cn(
+                      "m-auto size-6 duration-200",
+                      menuState && "rotate-180 opacity-0 scale-0"
+                    )}
+                  />
+                  <X
+                    className={cn(
+                      "absolute inset-0 m-auto size-6 -rotate-180 scale-0 opacity-0 duration-200",
+                      menuState && "rotate-0 scale-100 opacity-100"
+                    )}
+                  />
+                </button>
+              )}
+            </div>
 
             {/* Desktop Menu */}
             <div className="absolute inset-0 m-auto hidden size-fit lg:block">
@@ -97,7 +112,6 @@ export const HeroHeader = () => {
                 </div>
               ) : (
                 <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
-                  {/* Login Button */}
                   <Button
                     variant="outline"
                     size="sm"
@@ -106,8 +120,6 @@ export const HeroHeader = () => {
                   >
                     <Link to="/login">Login</Link>
                   </Button>
-
-                  {/* Sign Up Button */}
                   <Button
                     size="sm"
                     className={cn(isScrolled && "lg:hidden")}

@@ -84,6 +84,17 @@ const MainHeader = () => {
                       )}
 
                     </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      {user?.role === "user" && (
+                        <DropdownMenuItem asChild>
+                          <Link to="/request" className="flex items-center gap-3 py-2">
+                            <RxDashboard className="text-green-600" />
+                           Tenants Dashboard
+                          </Link>
+                        </DropdownMenuItem>
+                      )}
+
+                    </DropdownMenuItem>
 
                     <DropdownMenuItem asChild>
                      {
