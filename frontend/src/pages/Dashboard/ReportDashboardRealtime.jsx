@@ -105,8 +105,7 @@ export default function ReportDashboardRealtime() {
     0
   );
 
-  // Occupancy: we infer occupancy from tenants array and propertyId.units if available.
-  // If you have a properties collection with units, replace this logic with a dedicated /properties call.
+  
   const occupiedPropertyIds = new Set(tenants.map((t) => t.propertyId?._id).filter(Boolean));
   const occupied = occupiedPropertyIds.size;
   // assume each property has 1 unit if you don't have unit info — adjust if you track units
@@ -469,7 +468,7 @@ export default function ReportDashboardRealtime() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>User</TableHead>
+                  {/* <TableHead>User</TableHead> */}
                   <TableHead>Action</TableHead>
                   <TableHead>Tenant Affected</TableHead>
                   <TableHead>Timestamp</TableHead>
@@ -483,7 +482,6 @@ export default function ReportDashboardRealtime() {
                 ) : (
                   auditLog.slice(0, 20).map((row, i) => (
                     <TableRow key={i}>
-                      <TableCell>{row.user || "system"}</TableCell>
                       <TableCell>{row.action}</TableCell>
                       <TableCell>{row.tenant || "—"}</TableCell>
                       <TableCell>{row.date ? new Date(row.date).toLocaleString() : "—"}</TableCell>

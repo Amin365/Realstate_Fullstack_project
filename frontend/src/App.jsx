@@ -9,12 +9,13 @@ import PropertiesDetals from "./components/properties/PropertDetails";
 import PropertyDetailPage from "./components/properties/PropertyDetailPage";
 import PropertyCard from "./components/LandPage/PropertiesCrad";
 import ProtectedAdmin from "./pages/Protectedadmin";
-import ProfilePage from "./pages/profilePage";
+
 import Tenants from "./pages/Tenants";
 import Favorites from "./pages/Favorites";
 import { Payment } from "./pages/Dashboard/Payment";
 import ReportDashboardRealtime from "./pages/Dashboard/ReportDashboardRealtime";
 import MyTenantRequests from "./components/tenants/MyTenantRequests";
+import ProfilePage from "./pages/profilePage";
 
 
 
