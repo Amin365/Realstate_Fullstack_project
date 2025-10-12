@@ -34,11 +34,11 @@ import {
 } from "@/components/ui/sidebar"
 
 const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
+  // user: {
+  //   name: "shadcn",
+  //   email: "m@example.com",
+  //   avatar: "/avatars/shadcn.jpg",
+  // },
   navMain: [
     { title: "Dashboard", url: "/dashboard", icon: IconDashboard },
    { title: "Properties", url: "/dashboard/properties", icon: IconListDetails },
@@ -48,9 +48,8 @@ const data = {
     { title: "Reports", url: "/dashboard/reports", icon: IconReport },
   ],
   navSecondary: [
-    { title: "Settings", url: "#", icon: IconSettings },
-    { title: "Get Help", url: "#", icon: IconHelp },
-    { title: "Search", url: "#", icon: IconSearch },
+    { title: "Settings", url: "/dashboard/profile", icon: IconSettings },
+   
   ],
 }
 
@@ -91,7 +90,7 @@ export function AppSidebar(props) {
 
       {/* Footer / User */}
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser  />
       </SidebarFooter>
     </Sidebar>
   )

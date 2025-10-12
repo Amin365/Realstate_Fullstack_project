@@ -1,5 +1,5 @@
 
-"use client"
+
 
 import * as React from "react"
 import { SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar"

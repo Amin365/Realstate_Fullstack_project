@@ -55,8 +55,7 @@ const PropertyCard = () => {
 
     const dispatch = useDispatch();
      const favorites = useSelector((state) => state.favorites?.items || []);
-     console.log("favorites",favorites)
-   
+    
      const isFavorite = (id) => favorites.some((item) => item._id === id);
     
 

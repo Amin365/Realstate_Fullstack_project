@@ -87,10 +87,10 @@ const handleLogout=()=>{
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              {/* <DropdownMenuItem>
                 <IconUserCircle />
                 Account
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
              
             </DropdownMenuGroup>
             <DropdownMenuSeparator />

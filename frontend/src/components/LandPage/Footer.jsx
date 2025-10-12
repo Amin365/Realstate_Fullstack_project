@@ -2,32 +2,6 @@ import { HomeIcon } from "lucide-react"
 import { Link } from "react-router"
 
 
-const links = [
-    {
-        title: 'Features',
-        href: '#',
-    },
-    {
-        title: 'Solution',
-        href: '#',
-    },
-    {
-        title: 'Customers',
-        href: '#',
-    },
-    {
-        title: 'Pricing',
-        href: '#',
-    },
-    {
-        title: 'Help',
-        href: '#',
-    },
-    {
-        title: 'About',
-        href: '#',
-    },
-]
 
 export default function FooterSection() {
     return (
@@ -41,14 +15,15 @@ export default function FooterSection() {
                 </Link>
 
                 <div className="my-8 flex flex-wrap justify-center gap-6 text-sm">
-                    {links.map((link, index) => (
+                    {/* {links.map((link, index) => (
                         <Link
                             key={index}
                             href={link.href}
                             className="text-muted-foreground hover:text-primary block duration-150">
                             <span>{link.title}</span>
                         </Link>
-                    ))}
+                    ))} */}
+                    Waansan RealState
                 </div>
                 <div className="my-8 flex flex-wrap justify-center gap-6 text-sm">
                     <Link

@@ -56,6 +56,7 @@ export default function App() {
         <Route path="tenants" element={<Tenants/>}/>
          <Route path = "payments" element={<Payment/>} />
          <Route path = "reports" element={<ReportDashboardRealtime/>} />
+           <Route path='profile' element={<ProfilePage />} />
          
       </Route>
     </Routes>
