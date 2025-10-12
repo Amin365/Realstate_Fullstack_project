@@ -8,9 +8,10 @@ const UserSchema = new mongoose.Schema(
     phone: { type: String },
     password: { type: String, required: true },
     profile: { type: String, default: "" },
+    bio:{type:String},
     role: {
       type: String,
-      enum: ["user", "admin", "teacher", "manager"],
+      enum: ["user", "admin"],
       default: "user",
     },
     joinedAt: { type: Date, default: Date.now },

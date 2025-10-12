@@ -1,19 +1,16 @@
 import User from "../models/user.js";
 import { GenarateToken } from "../utility/JwtGenarate.js";
-import bcrypt from "bcryptjs";
 
-// ✅ REGISTER USER
+//  REGISTER USER
 export const Createuser = async (req, res, next) => {
   try {
     let { name, email, password, role, phone } = req.body;
     email = email.toLowerCase();
 
     const exist = await User.findOne({ email });
-    if (exist) {
-      return res.status(400).json({ message: "This email already exists" });
-    }
+    if (exist) return res.status(400).json({ message: "This email already exists" });
 
-    const profilePath = req.file ? `/uploads/${req.file.filename}` : "";
+    const profileUrl = req.file ? req.file.path : ""; 
 
     const user = await User.create({
       name,
@@ -21,10 +18,11 @@ export const Createuser = async (req, res, next) => {
       password,
       role,
       phone,
-      profile: profilePath,
+      profile: profileUrl,
     });
 
     const token = GenarateToken(user._id);
+
     res.status(201).json({
       success: true,
       token,
@@ -43,7 +41,7 @@ export const Createuser = async (req, res, next) => {
   }
 };
 
-// ✅ LOGIN
+//  LOGIN
 export const Login = async (req, res, next) => {
   try {
     let { email, password } = req.body;
@@ -56,13 +54,14 @@ export const Login = async (req, res, next) => {
 
     const token = GenarateToken(user._id);
     const { password: _, ...userData } = user.toObject();
+
     res.json({ success: true, token, user: userData });
   } catch (err) {
     next(err);
   }
 };
 
-// ✅ GET LOGGED-IN USER
+//  GET LOGGED-IN USER
 export const GetProfile = async (req, res, next) => {
   try {
     const user = await User.findById(req.user._id).select("-password");
@@ -74,7 +73,7 @@ export const GetProfile = async (req, res, next) => {
   }
 };
 
-// ✅ UPDATE PROFILE
+//  UPDATE PROFILE
 export const UpdateProfile = async (req, res, next) => {
   try {
     const { name, email, phone, role, bio } = req.body;
@@ -85,7 +84,7 @@ export const UpdateProfile = async (req, res, next) => {
     if (phone) updateData.phone = phone;
     if (role) updateData.role = role;
     if (bio) updateData.bio = bio;
-    if (req.file) updateData.profile = `/uploads/${req.file.filename}`;
+    if (req.file) updateData.profile = req.file.path; //  Cloudinary URL
 
     const updatedUser = await User.findByIdAndUpdate(req.user._id, updateData, {
       new: true,
@@ -102,7 +101,7 @@ export const UpdateProfile = async (req, res, next) => {
   }
 };
 
-// ✅ CHANGE PASSWORD
+//  CHANGE PASSWORD
 export const ChangePassword = async (req, res, next) => {
   try {
     const { oldPassword, newPassword } = req.body;
@@ -121,7 +120,7 @@ export const ChangePassword = async (req, res, next) => {
   }
 };
 
-// ✅ DELETE ACCOUNT
+//  DELETE ACCOUNT
 export const DeleteAccount = async (req, res, next) => {
   try {
     await User.findByIdAndDelete(req.user._id);

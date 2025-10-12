@@ -53,7 +53,7 @@ const MainHeader = () => {
                 <DropdownMenuTrigger asChild>
                   <Avatar className="cursor-pointer">
                     <AvatarImage
-                      src="https://images.unsplash.com/photo-1615109398623-88346a601842?w=600&auto=format&fit=crop&q=60"
+                    src={user?.profile}
                       alt={user?.name}
                     />
                     <AvatarFallback>{user?.name?.charAt(0)}</AvatarFallback>

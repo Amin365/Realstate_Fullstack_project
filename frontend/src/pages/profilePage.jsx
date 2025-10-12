@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import React, { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import {
   User,
@@ -9,8 +9,6 @@ import {
   Phone,
   Shield,
   Calendar,
-  Bell,
-  Globe,
   Lock,
   LogOut,
   Trash2,
@@ -18,15 +16,18 @@ import {
   Edit,
   X,
   FileText,
-  BarChart,
-  MessageSquare,
-  Folder,
+  Laptop,
+  Smartphone,
+  Activity,
+  Battery,
+  CheckCircle,
   Camera,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 import { ModeToggle } from "@/components/mode-toggle";
 import { useSelector } from "react-redux";
@@ -38,20 +39,38 @@ export default function ProfilePage() {
 
   const [editMode, setEditMode] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [tempData, setTempData] = useState(null);
-
-  // ✅ Fetch Profile
-  const { data: profile, isLoading } = useQuery({
-    queryKey: ["profile", user?._id],
-    queryFn: async () => {
-      const res = await api.get("/auth/me");
-      return res.data.user;
-    },
-    enabled: !!user,
-    onSuccess: (data) => setTempData(data),
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [tempData, setTempData] = useState(user || {});
+  const [passwords, setPasswords] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
   });
 
-  // ✅ Handle Profile Photo
+  // 🔹 Profile completion logic (example)
+  const profileCompletion = Math.min(
+    100,
+    [
+      user?.name,
+      user?.email,
+      user?.phone,
+      user?.bio,
+      user?.profile,
+    ].filter(Boolean).length * 20
+  );
+
+  // 🔹 Mock data
+  const recentActivities = [
+    { id: 1, action: "Updated profile picture", time: "2 hours ago" },
+    { id: 2, action: "Changed password", time: "1 day ago" },
+    { id: 3, action: "Logged in from Chrome", time: "2 days ago" },
+  ];
+
+  const loginDevices = [
+    { id: 1, device: "Windows 11 - Chrome", icon: Laptop, active: true },
+    { id: 2, device: "iPhone 13 - Safari", icon: Smartphone, active: false },
+  ];
+
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -60,7 +79,7 @@ export default function ProfilePage() {
     }
   };
 
-  // ✅ Update Profile
+  // 🔹 Update Profile
   const updateMutation = useMutation({
     mutationFn: async (updatedProfile) => {
       const formData = new FormData();
@@ -68,58 +87,59 @@ export default function ProfilePage() {
         if (key === "preview") continue;
         formData.append(key, updatedProfile[key]);
       }
-
       const res = await api.put("/auth/profile", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       return res.data.user;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast.success("Profile updated successfully!");
-      queryClient.invalidateQueries(["profile", user?._id]);
+      queryClient.invalidateQueries(["profile"]);
       setEditMode(false);
     },
     onError: () => toast.error("Failed to update profile."),
   });
 
-  // ✅ Delete Account
+  // 🔹 Delete Account
   const deleteMutation = useMutation({
     mutationFn: async () => {
       await api.delete("/auth/delete");
     },
     onSuccess: () => {
       toast.success("Account deleted successfully!");
-      setShowDeleteModal(false);
+      localStorage.removeItem("token");
+      window.location.href = "/login";
     },
     onError: () => toast.error("Failed to delete account."),
   });
 
-  if (isLoading)
-    return (
-      <div className="min-h-screen flex items-center justify-center text-gray-500">
-        Loading profile...
-      </div>
-    );
+  // 🔹 Change Password
+  const passwordMutation = useMutation({
+    mutationFn: async (passwords) => {
+      const res = await api.put("/auth/change-password", passwords);
+      return res.data;
+    },
+    onSuccess: () => {
+      toast.success("Password changed successfully!");
+      setShowPasswordModal(false);
+      setPasswords({ currentPassword: "", newPassword: "", confirmPassword: "" });
+    },
+    onError: () => toast.error("Failed to change password."),
+  });
 
   return (
-    <div className="min-h-screen p-6 bg-gray-50 dark:bg-slate-900 text-gray-800 dark:text-gray-100 transition-colors">
+    <div className="min-h-screen p-6 bg-gray-50 dark:bg-slate-900 text-gray-800 dark:text-gray-100">
       <motion.div
-        className="max-w-5xl mx-auto grid md:grid-cols-3 gap-6"
+        className="max-w-6xl mx-auto grid md:grid-cols-3 gap-6"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        {/* LEFT SIDE */}
-        <Card className="rounded-2xl shadow-md p-4 md:col-span-1 dark:bg-slate-800">
+        {/* LEFT SIDE - Profile Overview */}
+        <Card className="rounded-2xl shadow-md p-4 dark:bg-slate-800 md:col-span-1">
           <CardContent className="flex flex-col items-center space-y-4">
             <div className="relative group">
               <img
-                src={
-                  tempData?.preview ||
-                  (tempData?.profile?.startsWith("/uploads")
-                    ? `http://localhost:5000${tempData.profile}`
-                    : tempData?.profile) ||
-                  "/default-avatar.png"
-                }
+                src={tempData.preview || user?.profile || "/default-avatar.png"}
                 alt="Profile"
                 className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-md"
               />
@@ -127,41 +147,60 @@ export default function ProfilePage() {
                 <label className="absolute inset-0 bg-black/50 rounded-full flex flex-col items-center justify-center cursor-pointer text-white text-sm">
                   <Camera size={22} className="mb-1" />
                   Change
-                  <input
-                    type="file"
-                    className="hidden"
-                    onChange={handlePhotoChange}
-                    accept="image/*"
-                  />
+                  <input type="file" className="hidden" onChange={handlePhotoChange} accept="image/*" />
                 </label>
               )}
             </div>
 
-            <h2 className="text-2xl font-semibold">{profile?.name}</h2>
+            <h2 className="text-2xl font-semibold">{user?.name}</h2>
             <p className="text-gray-500 flex items-center gap-2">
-              <Shield size={16} /> {profile?.role}
+              <Shield size={16} /> {user?.role}
             </p>
             <p className="text-gray-500 flex items-center gap-2">
-              <Calendar size={16} /> Member since{" "}
-              {new Date(profile?.createdAt).toLocaleDateString()}
+              <Calendar size={16} /> Member since {new Date(user?.createdAt).toLocaleDateString()}
             </p>
 
-            {/* Stats */}
+            {/* 🔹 Profile Completion */}
+            <div className="w-full border-t pt-4 space-y-2">
+              <h3 className="text-lg font-semibold">Profile Completion</h3>
+              <Progress value={profileCompletion} className="h-2" />
+              <p className="text-sm text-gray-500">{profileCompletion}% Complete</p>
+            </div>
+
+            {/* 🔹 Profile Insights */}
             <div className="w-full border-t pt-4 space-y-3">
-              <h3 className="text-lg font-semibold">Account Stats</h3>
-              <div className="grid grid-cols-3 gap-3">
-                {[
-                  { icon: Folder, label: "Projects", value: 8 },
-                  { icon: BarChart, label: "Logins", value: 27 },
-                  { icon: MessageSquare, label: "Messages", value: 12 },
-                ].map((stat, i) => (
+              <h3 className="text-lg font-semibold flex gap-2 items-center">
+                <Activity size={18} /> Profile Insights
+              </h3>
+
+              {/* Recent Activities */}
+              <div className="space-y-2">
+                <h4 className="font-medium text-sm text-gray-500">Recent Activities</h4>
+                {recentActivities.map((a) => (
                   <div
-                    key={i}
-                    className="rounded-xl p-3 text-center bg-gray-100 dark:bg-slate-700"
+                    key={a.id}
+                    className="p-2 bg-gray-100 dark:bg-slate-700 rounded-lg text-sm flex justify-between"
                   >
-                    <stat.icon className="mx-auto mb-1 text-blue-500" size={18} />
-                    <p className="text-xl font-bold">{stat.value}</p>
-                    <p className="text-xs text-gray-500">{stat.label}</p>
+                    <span>{a.action}</span>
+                    <span className="text-gray-400">{a.time}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Login Devices */}
+              <div className="space-y-2 pt-2">
+                <h4 className="font-medium text-sm text-gray-500">Login Devices</h4>
+                {loginDevices.map((d) => (
+                  <div
+                    key={d.id}
+                    className={`p-2 rounded-lg flex items-center justify-between ${
+                      d.active ? "bg-blue-100 dark:bg-blue-900/30" : "bg-gray-100 dark:bg-slate-700"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <d.icon size={16} /> {d.device}
+                    </div>
+                    {d.active && <CheckCircle size={16} className="text-green-500" />}
                   </div>
                 ))}
               </div>
@@ -169,11 +208,10 @@ export default function ProfilePage() {
           </CardContent>
         </Card>
 
-        {/* RIGHT SIDE */}
+        {/* RIGHT SIDE - Profile Details */}
         <Card className="md:col-span-2 rounded-2xl shadow-md dark:bg-slate-800">
           <CardHeader className="flex justify-between items-center">
             <CardTitle className="text-2xl font-semibold">Profile Details</CardTitle>
-
             <div className="flex items-center gap-3">
               <ModeToggle />
               {!editMode ? (
@@ -193,7 +231,7 @@ export default function ProfilePage() {
                   <Button
                     variant="outline"
                     onClick={() => {
-                      setTempData(profile);
+                      setTempData(user);
                       setEditMode(false);
                     }}
                     className="rounded-xl flex gap-2"
@@ -210,18 +248,15 @@ export default function ProfilePage() {
             <div className="grid sm:grid-cols-2 gap-4">
               {[{ icon: User, key: "name", label: "Full Name" },
                 { icon: Mail, key: "email", label: "Email" },
-                { icon: Phone, key: "phone", label: "Phone" },
-              ].map((f) => (
+                { icon: Phone, key: "phone", label: "Phone" }].map((f) => (
                 <div key={f.key}>
                   <label className="text-gray-500 flex items-center gap-2">
                     <f.icon size={16} /> {f.label}
                   </label>
                   <Input
-                    disabled={!editMode}
+                    disabled={f.key === "email" || !editMode}
                     value={tempData?.[f.key] || ""}
-                    onChange={(e) =>
-                      setTempData({ ...tempData, [f.key]: e.target.value })
-                    }
+                    onChange={(e) => setTempData({ ...tempData, [f.key]: e.target.value })}
                     className="mt-1"
                   />
                 </div>
@@ -244,65 +279,20 @@ export default function ProfilePage() {
             {/* Security */}
             <div className="space-y-3 pt-4 border-t">
               <h3 className="text-lg font-semibold">Security</h3>
-              <Button variant="outline" className="w-full flex gap-2">
+              <Button variant="outline" className="w-full flex gap-2" onClick={() => setShowPasswordModal(true)}>
                 <Lock size={16} /> Change Password
               </Button>
-
-              <div className="rounded-xl p-3 bg-gray-100 dark:bg-slate-700">
-                <p className="text-sm font-medium mb-2 flex gap-2">
-                  <LogOut size={16} /> Recent Logins
-                </p>
-                <ul className="text-xs text-gray-500 space-y-1">
-                  <li>📍 Addis Ababa — Oct 11, 2025</li>
-                  <li>📍 Nairobi — Oct 8, 2025</li>
-                  <li>📍 Mobile Login — Oct 6, 2025</li>
-                </ul>
-              </div>
             </div>
 
             {/* Delete Account */}
             <div className="pt-4 border-t">
-              <Button
-                variant="destructive"
-                className="w-full flex gap-2"
-                onClick={() => setShowDeleteModal(true)}
-              >
+              <Button variant="destructive" className="w-full flex gap-2" onClick={() => setShowDeleteModal(true)}>
                 <Trash2 size={16} /> Delete Account
               </Button>
             </div>
           </CardContent>
         </Card>
       </motion.div>
-
-      {/* Delete Modal */}
-      {showDeleteModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
-          <motion.div
-            className="p-6 rounded-2xl w-96 bg-white text-gray-800 dark:bg-slate-800 dark:text-gray-100"
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-          >
-            <h3 className="text-xl font-semibold mb-3 flex gap-2">
-              <Trash2 /> Confirm Delete
-            </h3>
-            <p className="text-sm mb-4 text-gray-500">
-              Are you sure you want to permanently delete your account? This action cannot be undone.
-            </p>
-            <div className="flex justify-end space-x-3">
-              <Button variant="outline" onClick={() => setShowDeleteModal(false)}>
-                Cancel
-              </Button>
-              <Button
-                className="bg-red-600 hover:bg-red-700 text-white"
-                onClick={() => deleteMutation.mutate()}
-                disabled={deleteMutation.isPending}
-              >
-                {deleteMutation.isPending ? "Deleting..." : "Delete"}
-              </Button>
-            </div>
-          </motion.div>
-        </div>
-      )}
     </div>
   );
 }
