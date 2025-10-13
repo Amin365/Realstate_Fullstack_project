@@ -120,7 +120,7 @@ const MainHeader = () => {
                       {
                         user?.role==="admin"&&(
                           <Link
-                        to="/dashboard/clients"
+                        to="dashboard/tenants"
                         className="flex items-center gap-3 py-2"
                       >
                         <Users className="text-rose-600" />
