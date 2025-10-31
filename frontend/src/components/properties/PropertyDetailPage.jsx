@@ -2,7 +2,14 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import api from "../../lib/api/CleintApi";
-import { Bed, Bath, Ruler, Loader2, CheckCircle, AlertCircle } from "lucide-react";
+import {
+  Bed,
+  Bath,
+  Ruler,
+  Loader2,
+  CheckCircle,
+  AlertCircle,
+} from "lucide-react";
 import {
   Card,
   CardContent,
@@ -23,57 +30,45 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useSelector } from "react-redux";
+import axios from "axios";
 
 const PropertyDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { user } = useSelector((state) => state.auth); // 🧩 D: Auto-fill user data
+  const { user } = useSelector((state) => state.auth);
 
   const [formData, setFormData] = useState({
     fullName: user?.name || "",
     email: user?.email || "",
     phone: user?.phone || "",
     message: "",
+    paymentMethod: "cash", // default
   });
   const [open, setOpen] = useState(false);
-  const [showSuccessCard, setShowSuccessCard] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [successPage, setSuccessPage] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  // ✅ Fetch Property
+  // ✅ Fetch property details
   const { data: property, isLoading, isError } = useQuery({
     queryKey: ["property", id],
     queryFn: async () => (await api.get(`/properties/${id}`)).data,
   });
 
-  // ✅ Tenant Request Mutation
-  const tenantsMutation = useMutation({
-    mutationFn: async (formData) => {
-      const result = await api.post("/tenants", formData);
-      return result.data;
-    },
-    onSuccess: () => {
-      toast.success("Request sent successfully!");
-      setFormData({ fullName: "", email: "", phone: "", message: "" });
-      setOpen(false);
-      setShowSuccessCard(true);
+  // ✅ Tenant creation mutation
+  const tenantMutation = useMutation({
+    mutationFn: async (data) => await api.post("/tenants", data),
+    onSuccess: (res) => {
+      toast.success("Tenant request submitted successfully!");
       queryClient.invalidateQueries(["property", id]);
-
-      // ⏳ Animate redirect progress bar
-      let value = 0;
-      const interval = setInterval(() => {
-        value += 1;
-        setProgress(value);
-        if (value >= 100) {
-          clearInterval(interval);
-          navigate("/");
-        }
-      }, 40); // 4 seconds total
+      setProgress(100);
+      setSuccessPage(true);
+      setTimeout(() => navigate("/"), 4000);
     },
     onError: (err) => {
-      setErrorMsg(err.response?.data?.message || "Failed to send request");
-      toast.error(err.response?.data?.message || "Error submitting request");
+      setErrorMsg(err.response?.data?.message || "Failed to submit request");
+      toast.error("Error submitting request");
     },
   });
 
@@ -81,44 +76,52 @@ const PropertyDetailPage = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  // ✅ Handle submission for Cash / Online
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMsg("");
-    tenantsMutation.mutate({
-      ...formData,
-      propertyId: property._id,
-    });
+
+    if (formData.paymentMethod === "cash") {
+      // Save immediately with pending status
+      tenantMutation.mutate({
+        ...formData,
+        propertyId: property._id,
+        status: "pending",
+      });
+      animateProgress();
+    } else {
+      // Online → Initialize Chapa payment
+      try {
+        const response = await axios.post(
+          "http://localhost:4800/api/payments/initialize",
+          {
+            amount: property?.amount,
+            email: formData.email,
+            first_name: formData.fullName.split(" ")[0],
+            last_name: formData.fullName.split(" ")[1] || "User",
+            propertyId: property._id,
+            fullName: formData.fullName,
+            phone: formData.phone,
+          }
+        );
+
+        window.location.href = response.data.checkout_url;
+      } catch (err) {
+        toast.error("Payment initialization failed!");
+        console.error(err);
+      }
+    }
   };
 
-  // ✅ Success Screen
-  if (showSuccessCard) {
-    return (
-      <div className="flex justify-center items-center h-screen bg-green-50">
-        <Card className="p-10 text-center shadow-lg border border-green-200 animate-fade-in">
-          <CheckCircle className="mx-auto text-green-600 w-14 h-14" />
-          <CardHeader>
-            <CardTitle className="text-green-600 text-2xl font-semibold">
-              Request Submitted Successfully!
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-gray-700 mt-2">
-              You’ll be redirected to the main page shortly.
-            </p>
-            {/* Progress Bar */}
-            <div className="mt-4 w-full bg-green-100 h-2 rounded-full">
-              <div
-                className="h-2 bg-green-500 rounded-full transition-all duration-100"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
+  const animateProgress = () => {
+    let value = 0;
+    const interval = setInterval(() => {
+      value += 2;
+      setProgress(value);
+      if (value >= 100) clearInterval(interval);
+    }, 40);
+  };
 
-  // ✅ Loading State
   if (isLoading)
     return (
       <div className="flex justify-center items-center h-screen">
@@ -133,6 +136,29 @@ const PropertyDetailPage = () => {
         <AlertCircle className="mr-2" /> Failed to load property.
       </div>
     );
+
+  // ✅ Payment Success Page (for after online payment redirect)
+  if (successPage) {
+    return (
+      <div className="flex justify-center items-center h-screen bg-green-50">
+        <Card className="p-10 text-center shadow-xl animate-fade-in border border-green-300">
+          <CheckCircle className="mx-auto text-green-600 w-16 h-16 mb-4 animate-bounce" />
+          <h2 className="text-2xl font-bold text-green-700 mb-2">
+            Tenant Request Saved Successfully!
+          </h2>
+          <p className="text-gray-700 mb-4">
+            Your request has been recorded. Redirecting you home...
+          </p>
+          <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
+            <div
+              className="bg-green-600 h-2 transition-all duration-500 ease-linear"
+              style={{ width: `${progress}%` }}
+            ></div>
+          </div>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto p-6">
@@ -149,9 +175,7 @@ const PropertyDetailPage = () => {
 
         <CardContent className="p-6">
           <div className="flex justify-between items-center">
-            <CardTitle className="text-3xl font-bold">
-              {property?.title}
-            </CardTitle>
+            <CardTitle className="text-3xl font-bold">{property?.title}</CardTitle>
             <span
               className={`px-3 py-1 text-sm font-semibold rounded-full ${
                 property?.status === "rented"
@@ -192,15 +216,15 @@ const PropertyDetailPage = () => {
               >
                 {property?.status === "rented"
                   ? "Already Rented"
-                  : "Request as Tenant"}
+                  : "Register & Pay"}
               </Button>
             </DialogTrigger>
 
             <DialogContent className="sm:max-w-lg">
               <DialogHeader>
-                <DialogTitle>Tenant Request Form</DialogTitle>
+                <DialogTitle>Tenant Registration & Payment</DialogTitle>
                 <DialogDescription>
-                  Fill in your information to request this property.
+                  Fill in your details and choose how to pay.
                 </DialogDescription>
               </DialogHeader>
 
@@ -257,15 +281,44 @@ const PropertyDetailPage = () => {
                   />
                 </div>
 
+                {/* ✅ Payment Method */}
+                <div className="space-y-2">
+                  <Label>Payment Method</Label>
+                  <div className="flex gap-4">
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="radio"
+                        name="paymentMethod"
+                        value="cash"
+                        checked={formData.paymentMethod === "cash"}
+                        onChange={handleChange}
+                      />
+                      Cash (Pay later)
+                    </label>
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="radio"
+                        name="paymentMethod"
+                        value="online"
+                        checked={formData.paymentMethod === "online"}
+                        onChange={handleChange}
+                      />
+                      Online (Chapa)
+                    </label>
+                  </div>
+                </div>
+
                 <Button
                   type="submit"
-                  disabled={tenantsMutation.isPending}
+                  disabled={tenantMutation.isPending}
                   className="w-full bg-rose-600 hover:bg-rose-700 text-white"
                 >
-                  {tenantsMutation.isPending ? (
+                  {tenantMutation.isPending ? (
                     <Loader2 className="animate-spin mr-2 h-4 w-4 inline" />
                   ) : null}
-                  {tenantsMutation.isPending ? "Submitting..." : "Submit Request"}
+                  {formData.paymentMethod === "cash"
+                    ? "Submit & Save"
+                    : "Proceed to Chapa"}
                 </Button>
               </form>
             </DialogContent>

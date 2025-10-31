@@ -16,6 +16,9 @@ import { Payment } from "./pages/Dashboard/Payment";
 import ReportDashboardRealtime from "./pages/Dashboard/ReportDashboardRealtime";
 import MyTenantRequests from "./components/tenants/MyTenantRequests";
 import ProfilePage from "./pages/profilePage";
+import PaymentSuccessPage from "./pages/PaymentSuccess";
+
+
 
 
 
@@ -42,6 +45,9 @@ export default function App() {
 
        <Route path="/propertydetails/:id" element={<ProtectedRoute> <PropertyCard /> </ProtectedRoute>} />
        <Route path="request" element={<MyTenantRequests/>} />
+       <Route path="/payment/success" element={<PaymentSuccessPage />} />
+
+     
 
       {/* Dashboard Layout */}
       <Route

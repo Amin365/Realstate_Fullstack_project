@@ -18,10 +18,6 @@ export function LoginForm({ className, ...props }) {
   const disptach =useDispatch()
 
   const{user,token}=useSelector(state=>state.auth)
-
- 
- 
- 
   const [formValue, setFormValue] = useState({
     email: "",
     password: "",

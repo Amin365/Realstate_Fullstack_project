@@ -4,6 +4,7 @@ import { protect } from "../middleware/auth.js";
 import multer from "multer";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import cloudinary from "../utility/cloudinary.js";
+import { initializePayment, verifyPayment } from "../controllers/paymentController.js";
 
 
 const PropertyRouter = express.Router();
@@ -36,6 +37,8 @@ PropertyRouter.put("/property/:id", protect, upload.single("image"), updatePrope
 
 // ----------------- DELETE PROPERTY -----------------
 PropertyRouter.delete("/property/:id", protect, DeleteProperty)
+PropertyRouter.post("/payments/initialize", initializePayment);
+PropertyRouter.get("/payments/verify/:tx_ref", verifyPayment);
 
 
 export default PropertyRouter;
